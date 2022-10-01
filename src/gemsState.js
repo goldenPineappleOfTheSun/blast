@@ -33,7 +33,7 @@ export class GemsState {
 
     /*
     сообщить тип камня, который должен лежать в координатах x y
-    type - берётся из перечисления gemTypes (но теоретически от типов требуется только сравниваемость)
+    type - берётся из перечисления gemTypes
     */
     put(x, y, type) {
         if (x < 0 || y < 0 || x > this.#field.length || y > this.#field[0].length) {

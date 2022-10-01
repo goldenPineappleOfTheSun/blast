@@ -18,7 +18,6 @@ export class Cell {
         testSprite.drawRect(5, 5, this.#size - 10, this.#size - 10);
         testSprite.endFill();
         this.#sprite.addChild(testSprite);
-
     }
 
     getSprite() {
