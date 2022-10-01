@@ -1,2 +1,2 @@
-export let progressPanelHeight = 100;
-export let bonusesPanelWidth = 100;
+export let progressPanelHeight = 85;
+export let bonusesPanelWidth = 456;
