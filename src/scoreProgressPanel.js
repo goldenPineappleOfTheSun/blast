@@ -1,8 +1,10 @@
 import * as PIXI from 'pixi.js'
 
 export class ScoreProgressPanel {
+    #sprite;
+
     constructor(x, y, width, height) {
-        this.sprite = new PIXI.Container();
+        this.#sprite = new PIXI.Container();
 
         let panelSprite = new PIXI.Graphics();
         panelSprite.beginFill(0xDE3249);
@@ -10,10 +12,10 @@ export class ScoreProgressPanel {
         panelSprite.endFill();
         panelSprite.x = x;
         panelSprite.y = y;
-        this.sprite.addChild(panelSprite);
+        this.#sprite.addChild(panelSprite);
     }
 
     getSprite() {
-        return this.sprite;
+        return this.#sprite;
     }
 }
