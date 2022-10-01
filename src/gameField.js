@@ -35,21 +35,6 @@ export class GameField {
         return this;
     }
 
-    /*
-    разрешить игроку тыкать (фактически начать игру)
-    */
-    start() {
-        if (!this.#gemSize || !this.#width || !this.#height) {
-            throw new Error('Перед запуском надо вызвать setDimensions'); 
-        }
-        this.#panelSprite.beginFill(0xff9800);
-        this.#panelSprite.drawRect(0, 0, this.#width, this.#height);
-        this.#panelSprite.endFill();
-        this.#panelSprite.x = this.#x;
-        this.#panelSprite.y = this.#y;
-        return this;
-    }
-
     get gemSize() {
         return this.#gemSize;
     }
@@ -64,6 +49,21 @@ export class GameField {
 
     get position() {
         return {x: this.#x, y:this.#y};
+    }
+
+    /*
+    разрешить игроку тыкать (фактически начать игру)
+    */
+    start() {
+        if (!this.#gemSize || !this.#width || !this.#height) {
+            throw new Error('Перед запуском надо вызвать setDimensions'); 
+        }
+        this.#panelSprite.beginFill(0xff9800);
+        this.#panelSprite.drawRect(0, 0, this.#width, this.#height);
+        this.#panelSprite.endFill();
+        this.#panelSprite.x = this.#x;
+        this.#panelSprite.y = this.#y;
+        return this;
     }
 
     getSprite() {
