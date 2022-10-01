@@ -5,6 +5,11 @@ test('throws error if "start" called before dimensions set', () => {
     expect(field.start).toThrow();
 });
 
+test('throws error if "start" called two times', () => {
+    const field = new GameField(0, 0).setDimensions(2, 2, 2, 2).start();
+    expect(field.start).toThrow();
+});
+
 test('calculates width correctly', () => {
     const field1 = new GameField(0, 0).setDimensions(5, 5, 100, 100);
     expect(field1.width).toBe(100);
