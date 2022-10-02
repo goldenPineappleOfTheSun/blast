@@ -2,26 +2,24 @@ import { Container, Graphics, Sprite } from 'pixi.js'
 import { readGemTexture } from './gemTypes.js'
 
 export class Cell {
-    #sprite; #gemSprite; #size; #position; #x; #y; #state; #astate;
+    #sprite; #gemSprite; #size; #position; #x; #y; #getstate; #onclick;
 
     /*
-    position {x, y} - позиция спрайта в пикселях
-    coordinates {x, y} - два целых числа, занимаемая клетка на поле
+    x, y - позиция спрайта в пикселях
     size - размер спрайта в пикселях
     fieldState - текущее состояние поля
     animationState - текущее состояние всяких анимаций на поле
     */
-    constructor(position, coordinates, size, fieldState, animationState) {
-        this.#position = position;
-        this.#x = coordinates.x;
-        this.#y = coordinates.y;
+    constructor(x, y, size) {
+        this.#position = {x, y};
         /* #sprite - рутовый контейнер */
         this.#sprite = new Container();
-        this.#sprite.x = position.x + size / 2;
-        this.#sprite.y = position.y + size / 2;
+        this.#sprite.x = x + size / 2;
+        this.#sprite.y = y + size / 2;
+        this.#sprite.interactive = true;
+        /* создаётся много функций, но с другой стороны cell-объекты никогда не удаляются и не пересоздаются, так что ок */
+        this.#sprite.on('mouseup', this.click.bind(this));
         this.#size = size;
-        this.#state = fieldState;
-        this.#astate = animationState;
 
         /* #gemSprite - картинка, которую надо нарисовать */
         this.#gemSprite = new Sprite.from('img/red.png');
@@ -39,8 +37,22 @@ export class Cell {
         return this.#sprite;
     }
 
+    handlerForGetCurrentState(func) {
+        this.#getstate = func;
+        return this;
+    }
+
+    handlerForClick(func) {
+        this.#onclick = func;
+        return this;
+    }
+
+    click() {
+        this.#onclick();
+    }
+
     animate(delta) {
-        const state = this.#state.get(this.#x, this.#y);
+        const state = this.#getstate();
 
         /* в клетке пусто */
         if (state === null) {

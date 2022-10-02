@@ -104,9 +104,10 @@ export class GameField {
         for (let i=this.#size.x-1; i>=0; i--) {
             for (let j=this.#size.y-1; j>=0; j--) {
                 this.#gems[i][j] = new Cell(
-                    {x:i * this.#gemSize, y:j * this.#gemSize},
-                    {x:i, y:j}, this.#gemSize - 1,
-                    this.#fieldState, this.#animationState);
+                    i * this.#gemSize, j * this.#gemSize, this.#gemSize,
+                    this.#fieldState, this.#animationState)
+                    .handlerForGetCurrentState(() => this.#fieldState.get(i, j))
+                    .handlerForClick(() => alert(i));
                 this.#sprite.addChild(this.#gems[i][j].getSprite());
             }
         }
