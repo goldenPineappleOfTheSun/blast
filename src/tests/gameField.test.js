@@ -7,6 +7,10 @@ import { gemTypes } from '../GemTypes.js';
 const gemState = new GemsState(1, 1);
 const animationsState = new AnimationsState();
 
+function createExampleAnimationState() {
+    return new AnimationsState();
+}
+
 function createExampleGemState() {
     return new GemsState(4, 4)
         .put(0, 0, gemTypes.blue)
@@ -208,6 +212,14 @@ test('click must make upper gems falling', () => {
     expect(state1.get(2, 0)).toBe(gemTypes.red);
     expect(state1.get(1, 1)).toBe(null);
     expect(state1.get(0, 1)).toBe(null);
+});
+
+test('click create new blocks above', () => {
+    const state1 = createExampleGemState();
+    const astate1 = createExampleAnimationState();
+    const field1 = createExampleField().setRules(3).setStateHolders(state1, astate1).start();
+    field1.click(1, 1);
+    expect(astate1.count()).toBe(6);
 });
 
 test('clicks dont do anything if start never called', () => {

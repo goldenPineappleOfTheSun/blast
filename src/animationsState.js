@@ -111,7 +111,7 @@ export class AnimationsState {
             for (let gem of col) {
                 if (lastY - gem.y < 1) {
                     gem.y = lastY - 1;
-                    gem.velocity = Math.min(gem.velocity, lastVel)-0.01;
+                    gem.velocity = Math.min(gem.velocity, lastVel) - 0.03;
                 }
                 lastY = gem.y;
                 lastVel = gem.velocity;

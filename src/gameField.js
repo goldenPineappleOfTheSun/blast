@@ -9,7 +9,7 @@ const stages = {
 }
 
 export class GameField {
-    #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #bgSprite; #stage; #size;
+    #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #bgSprite; #maskSprite; #stage; #size;
 
     /* спрайты камней. не несут логики - только отображение. каждый гем отвечает за отображение одной ячейки 
     (и не падает вниз вместе с камнями, ничего такого, просто следит за одной ячейкой и отрисовывает её состояние) */
@@ -37,7 +37,10 @@ export class GameField {
         this.#stage = stages.notStarted;
 
         this.#bgSprite = new Graphics();
+        this.#maskSprite = new Graphics();
         this.#sprite.addChild(this.#bgSprite);
+        this.#sprite.addChild(this.#maskSprite);
+        this.#sprite.mask = this.#maskSprite;
 
         this.#gems = [];
     }
@@ -110,17 +113,24 @@ export class GameField {
             throw new Error('Перед запуском надо вызвать setRules'); 
         }
         this.#stage = stages.clickable;
+
         this.#bgSprite.beginFill(0xff9800);
         this.#bgSprite.drawRect(-20, -20, this.#width + 40, this.#height + 40);
         this.#bgSprite.endFill();
+
+        this.#maskSprite.beginFill(0xff9800);
+        this.#maskSprite.drawRect(-20, -20, this.#width + 40, this.#height + 40);
+        this.#maskSprite.endFill();
 
         this.#sprite.x = this.#x;
         this.#sprite.y = this.#y;
 
         /* кладём камни снизу вверх, чтобы pixi отрисовывал нижние позади верхних */
+        /* счёт по y начинается с -1, так как визуально кубики могут быть выше экрана (например новые) 
+        их тоже надо нарисовать */
         this.#gems = Array(this.#size.x).fill().map(()=>Array(this.#size.y).fill(null));
         for (let i=this.#size.x-1; i>=0; i--) {
-            for (let j=this.#size.y-1; j>=0; j--) {
+            for (let j=this.#size.y-1; j>=-1; j--) {
                 this.#gems[i][j] = new Cell(
                     i * this.#gemSize, j * this.#gemSize, this.#gemSize,
                     this.#fieldState, this.#animationState)
@@ -163,7 +173,7 @@ export class GameField {
                 }
             }
             for (let j=1; j<=count; j++) {
-                this.#animationState.put(new FallingGem(i, -j, this.#fieldState.chooseRandomColor(), -0.05));
+                this.#animationState.put(new FallingGem(i, -j - 1, this.#fieldState.chooseRandomColor(), -0.05));
             }
         }
 
@@ -221,7 +231,7 @@ export class GameField {
 
     animate(delta) {
         for (let i=0; i<this.#size.x; i++) {
-            for (let j=0; j<this.#size.y; j++) {
+            for (let j=-1; j<this.#size.y; j++) {
                 this.#gems[i][j].animate(delta);
             }
         }
