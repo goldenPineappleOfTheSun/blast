@@ -1,7 +1,7 @@
 import { FallingGem } from './fallingGem.js';
 
 export class AnimationsState {
-    #field; #getstate; #putgem; #getsize;
+    #field; #getstate; #putgem; #getsize; #animationended;
 
     constructor() {
         this.#field = [];
@@ -22,6 +22,12 @@ export class AnimationsState {
     /* указать функцию () => {x:int, y:int}, которая отдаёт размер поля */
     handlerForGetFieldSize(func) {
         this.#getsize = func;
+        return this;
+    }
+
+    /* указать функцию () => void, которая вызовется, когда все анимации и падения завершатся */
+    handlerForEndAnimation(func) {
+        this.#animationended = func;
         return this;
     }
 
@@ -56,6 +62,10 @@ export class AnimationsState {
             }
         }
         this.#field = this.#field.filter(x => !elementsToDestroy.find(y => x === y));
+
+        if (this.#field.length === 0) {
+            this.#animationended();
+        }
     }
 
     /* 

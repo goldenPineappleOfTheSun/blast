@@ -3,7 +3,10 @@ import { FallingGem } from '../fallingGem.js';
 import { gemTypes } from '../GemTypes.js';
 
 function createAnimationState() {
-    return new AnimationsState();
+    return new AnimationsState()
+        .handlerForGetCellState(()=>{})
+        .handlerForPutStaticGem(()=>{})
+        .handlerForGetFieldSize(()=>{return {x:1000, y:1000}});
 }
 
 test('throws error if wrong object type was put as a gem', () => {

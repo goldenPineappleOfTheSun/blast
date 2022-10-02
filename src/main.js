@@ -37,6 +37,8 @@ function init() {
             app.screen.width - bonusesPanelWidth - gameFieldPadding * 2, 
             app.screen.height - progressPanelHeight - gameFieldPadding * 2)
         .start();
+    animationState
+        .handlerForEndAnimation(gameField.playersTurn.bind(gameField));
 
     app.stage.addChild(scoreProgressPanel.getSprite());
     app.stage.addChild(scoreBonusesPanel.getSprite());

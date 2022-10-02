@@ -2,8 +2,14 @@ import { Container, Graphics } from 'pixi.js'
 import { Cell } from './cell.js';
 import { FallingGem } from './fallingGem.js';
 
+const stages = {
+    notStarted: 0,
+    clickable: 1,
+    animation: 2,
+}
+
 export class GameField {
-    #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #bgSprite; #started; #size;
+    #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #bgSprite; #stage; #size;
 
     /* спрайты камней. не несут логики - только отображение. каждый гем отвечает за отображение одной ячейки 
     (и не падает вниз вместе с камнями, ничего такого, просто следит за одной ячейкой и отрисовывает её состояние) */
@@ -28,7 +34,7 @@ export class GameField {
         this.#width = 0;
         this.#height = 0;
         this.#gemSize = 0;
-        this.#started = false;
+        this.#stage = stages.notStarted;
 
         this.#bgSprite = new Graphics();
         this.#sprite.addChild(this.#bgSprite);
@@ -91,7 +97,7 @@ export class GameField {
     разрешить игроку тыкать (фактически начать игру)
     */
     start() {
-        if (this.#started) {
+        if (this.#stage !== stages.notStarted) {
             throw new Error('Нельзя запустить более одного раза'); 
         }
         if (!this.#gemSize || !this.#width || !this.#height) {
@@ -103,7 +109,7 @@ export class GameField {
         if (!this.#rule_minPackSize) {
             throw new Error('Перед запуском надо вызвать setRules'); 
         }
-        this.#started = true;
+        this.#stage = stages.clickable;
         this.#bgSprite.beginFill(0xff9800);
         this.#bgSprite.drawRect(-20, -20, this.#width + 40, this.#height + 40);
         this.#bgSprite.endFill();
@@ -133,7 +139,7 @@ export class GameField {
     }
 
     click(x, y) {
-        if (!this.#started) {
+        if (this.#stage !== stages.clickable) {
             return; 
         }
 
@@ -141,6 +147,8 @@ export class GameField {
         if (!check) {
             return;
         }
+
+        this.#stage = stages.animation;
 
         for (let f of check) {
             this.#fieldState.clear(f.x, f.y);
@@ -160,6 +168,11 @@ export class GameField {
                 }
             }
         }
+    }
+
+    /* все анимации закончились и снова можно тыкать */
+    playersTurn() {
+        this.#stage = stages.clickable;
     }
 
     checkIfPackable(x, y) {

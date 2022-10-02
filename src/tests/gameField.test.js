@@ -213,9 +213,18 @@ test('click must make upper gems falling', () => {
 test('clicks dont do anything if start never called', () => {
     const state1 = createExampleGemState();
     const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState);
-    field1.click(0, 0);
     field1.click(1, 1);
-    expect(state1.get(0, 0)).toBe(gemTypes.blue);
     expect(state1.get(1, 1)).toBe(gemTypes.yellow);
     expect(state1.get(0, 1)).toBe(gemTypes.yellow);
+});
+
+test('clicks dont do anything when gamefield on a wrong stage', () => {
+    const state1 = createExampleGemState();
+    const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState).start();
+    field1.click(1, 1);
+    expect(state1.get(1, 1)).toBe(null);
+    expect(state1.get(0, 1)).toBe(null);
+    field1.click(3, 3);
+    expect(state1.get(3, 3)).toBe(gemTypes.blue);
+    expect(state1.get(2, 3)).toBe(gemTypes.blue);
 });
