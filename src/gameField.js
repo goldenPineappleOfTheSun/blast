@@ -93,7 +93,7 @@ export class GameField {
         }
         this.#started = true;
         this.#bgSprite.beginFill(0xff9800);
-        this.#bgSprite.drawRect(0, 0, this.#width, this.#height);
+        this.#bgSprite.drawRect(-20, -20, this.#width + 40, this.#height + 40);
         this.#bgSprite.endFill();
 
         this.#sprite.x = this.#x;
@@ -104,7 +104,7 @@ export class GameField {
             for (let j=0; j<this.#size.y; j++) {
                 this.#gems[i][j] = new Cell(
                     {x:i * this.#gemSize, y:j * this.#gemSize},
-                    {x:i, y:j}, this.#gemSize,
+                    {x:i, y:j}, this.#gemSize - 1,
                     this.#fieldState, this.#animationState);
                 this.#sprite.addChild(this.#gems[i][j].getSprite());
             }

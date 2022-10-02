@@ -26,8 +26,13 @@ export class Cell {
         /* #gemSprite - картинка, которую надо нарисовать */
         this.#gemSprite = new Sprite.from('img/red.png');
         this.#gemSprite.anchor.set(0.5);
-        this.#gemSprite.scale = {x: 0.5, y: 0.5};
         this.#sprite.addChild(this.#gemSprite);
+
+        const bounds = this.#gemSprite.getBounds();
+        /* у картинок камней есть небольшая пристройка сверху, из-за чего высота чуть больше ширины
+        поэтому scale считается относительно ширины */
+        const xScale = this.#size / bounds.width;
+        this.#gemSprite.scale = {x:xScale, y:xScale};
     }
 
     getSprite() {

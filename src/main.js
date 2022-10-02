@@ -7,7 +7,7 @@ import { GameField } from './gameField.js';
 import { GemsState } from './gemsState.js';
 
 const cellsCount = {x: 5, y:5};
-const gameFieldPadding = 30;
+const gameFieldPadding = 50;
 
 let started = false; 
 let gameField = null;
@@ -28,7 +28,7 @@ function init() {
             cellsCount.x, 
             cellsCount.y, 
             app.screen.width - bonusesPanelWidth - gameFieldPadding * 2, 
-            app.screen.height - progressPanelHeight - 60)
+            app.screen.height - progressPanelHeight - gameFieldPadding * 2)
         .start();
 
     app.stage.addChild(scoreProgressPanel.getSprite());
