@@ -95,10 +95,10 @@ export class AnimationsState {
                         overlapped = true;
                         if (a.y > b.y) {
                             b.y = a.y - 1;
-                            b.velocity = Math.min(a.velocity, b.velocity);
+                            b.velocity = Math.min(a.velocity, b.velocity) - 0.01;
                         } else {
                             a.y = b.y - 1;
-                            a.velocity = Math.min(a.velocity, b.velocity);
+                            a.velocity = Math.min(a.velocity, b.velocity) - 0.01;
                         }
                     }
                 }
@@ -122,7 +122,8 @@ export class AnimationsState {
             if (Math.abs(gem.x - x) < 0.1 && gem.y - y <= 0 && gem.y - y > -1) {    
                 cell = {
                     type: gem.type,
-                    offset: gem.y - y
+                    offset: gem.y - y,
+                    rotation: gem.rotation,
                 }
             }
         }

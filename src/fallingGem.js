@@ -8,6 +8,8 @@ export class FallingGem {
         this.#acceleration = 0.004;
         this.#maxvelocity = 0.3;
         this.velocity = initAccelerate;
+        this.rotationSpeed = -0.005 + Math.random() * 0.01;
+        this.rotation = 0;
     }
 
     get type() {
@@ -19,5 +21,7 @@ export class FallingGem {
             this.velocity += this.#acceleration * delta;
         }
         this.y += this.velocity * delta;
+        this.rotation += this.rotationSpeed;
+        this.rotationSpeed *= 0.95;
     }
 }

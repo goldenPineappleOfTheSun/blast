@@ -78,12 +78,14 @@ export class Cell {
             this.#gemSprite.alpha = 1;
             this.#gemSprite.texture = readGemType(astate.type).texture;
             this.#gemSprite.y = astate.offset * this.#size;
+            this.#gemSprite.rotation = astate.rotation;
         }
 
         if (state !== null && astate === null) {
             /* в клетке камень */
             this.#gemSprite.alpha = 1;
             this.#gemSprite.y = 0;
+            this.#gemSprite.rotation = 0;
             this.#gemSprite.texture = readGemType(state).texture;
         }
     }
