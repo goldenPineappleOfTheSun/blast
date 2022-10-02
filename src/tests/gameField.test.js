@@ -193,3 +193,13 @@ test('click must destroy packable gems', () => {
     expect(state2.get(1, 1)).toBe(gemTypes.yellow);
     expect(state2.get(0, 1)).toBe(gemTypes.yellow);
 });
+
+test('clicks dont do anything if start never called', () => {
+    const state1 = createExampleGemState();
+    const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState);
+    field1.click(0, 0);
+    field1.click(1, 1);
+    expect(state1.get(0, 0)).toBe(gemTypes.blue);
+    expect(state1.get(1, 1)).toBe(gemTypes.yellow);
+    expect(state1.get(0, 1)).toBe(gemTypes.yellow);
+});

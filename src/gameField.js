@@ -131,6 +131,10 @@ export class GameField {
     }
 
     click(x, y) {
+        if (!this.#started) {
+            return; 
+        }
+        
         const check = this.checkIfPackable(x, y);
         if (!check) {
             return;
