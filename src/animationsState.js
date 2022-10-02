@@ -1,4 +1,5 @@
 import { FallingGem } from './fallingGem.js';
+import { SwappingGem } from './swappingGem.js';
 
 export class AnimationsState {
     #field; #getstate; #putgem; #getsize; #animationended;
@@ -37,7 +38,7 @@ export class AnimationsState {
 
     /* добавить ещё один камень */
     put(gem) {
-        const allowedtypes = [FallingGem];
+        const allowedtypes = [FallingGem, SwappingGem];
         if (!allowedtypes.some(o => gem instanceof o)) {
             throw new Error("в AnimationsState можно ложить только объекты разрешенных типов");
         }
@@ -54,12 +55,22 @@ export class AnimationsState {
         let elementsToDestroy = [];
         /* проверяем, вдруг произошло что-то важное для геймплея */
         for (let a of this.#field) {
-            let r = this.#getstate
-            let x = a.x;
-            let y = (a.y + 1) ^ 0;
-            if (this.#getstate(x, y) || this.#getsize().y === y) {
-                this.#putgem(x, y - 1, a.type);
-                elementsToDestroy.push(a);
+            if (a instanceof FallingGem) {
+                let r = this.#getstate
+                let x = a.x;
+                let y = (a.y + 1) ^ 0;
+                if (this.#getstate(x, y) || this.#getsize().y === y) {
+                    this.#putgem(x, y - 1, a.type);
+                    elementsToDestroy.push(a);
+                }
+                continue;
+            }
+            if (a instanceof SwappingGem) {
+                if (a.progress > 1) {
+                    this.#putgem(a.target.x, a.target.y, a.type);
+                    elementsToDestroy.push(a);
+                }
+                continue;
             }
         }
         this.#field = this.#field.filter(x => !elementsToDestroy.find(y => x === y));
@@ -133,10 +144,19 @@ export class AnimationsState {
         let cell = null;
         for (let gem of this.#field) {
             if (Math.abs(gem.x - x) < 0.1 && gem.y - y <= 0 && gem.y - y > -1) {    
-                cell = {
-                    type: gem.type,
-                    offset: gem.y - y,
-                    rotation: gem.rotation,
+                if (gem instanceof FallingGem) {
+                    cell = {
+                        animation: 'falling',
+                        type: gem.type,
+                        offset: gem.y - y,
+                        rotation: gem.rotation,
+                    }
+                } else if (gem instanceof SwappingGem) {
+                    cell = {
+                        animation: 'swapping',
+                        type: gem.type,
+                        offset: gem.offset,
+                    }
                 }
             }
         }

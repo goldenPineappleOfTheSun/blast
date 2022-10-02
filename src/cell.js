@@ -75,16 +75,27 @@ export class Cell {
 
         if (state === null && astate !== null) {
             /* в клетке есть падающий или анимированный камень */
-            this.#gemSprite.alpha = 1;
-            this.#gemSprite.texture = readGemType(astate.type).texture;
-            this.#gemSprite.y = astate.offset * this.#size;
-            this.#gemSprite.rotation = astate.rotation;
+            if (astate.animation === 'falling') {
+                this.#gemSprite.alpha = 1;
+                this.#gemSprite.texture = readGemType(astate.type).texture;
+                this.#gemSprite.y = astate.offset * this.#size;
+                this.#gemSprite.rotation = astate.rotation;
+                return;
+            }
+            if (astate.animation === 'swapping') {
+                this.#gemSprite.alpha = 1;
+                this.#gemSprite.texture = readGemType(astate.type).texture;
+                this.#gemSprite.x = astate.offset.x * this.#size;
+                this.#gemSprite.y = astate.offset.y * this.#size;
+                return;
+            }
         }
 
         if (state !== null && astate === null) {
             /* в клетке камень */
             this.#gemSprite.alpha = 1;
             this.#gemSprite.y = 0;
+            this.#gemSprite.x = 0;
             this.#gemSprite.rotation = 0;
             this.#gemSprite.texture = readGemType(state).texture;
         }

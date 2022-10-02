@@ -1,11 +1,13 @@
 import { Container, Graphics } from 'pixi.js'
 import { Cell } from './cell.js';
 import { FallingGem } from './fallingGem.js';
+import { SwappingGem } from './swappingGem.js';
 
 const stages = {
     notStarted: 0,
     clickable: 1,
     animation: 2,
+    swapping: 3,
 }
 
 export class GameField {
@@ -192,6 +194,25 @@ export class GameField {
                 }
             }
         }
+    }
+
+    /*
+    меняет местами два камня
+    a {x, y} - координаты первого камня
+    b {x, y} - координаты второго камня
+    */
+    swap(a, b) {
+        if (this.#stage !== stages.clickable) {
+            return;
+        }
+        this.#stage = stages.swapping;
+        this.#animationState.put(new SwappingGem(a, b, this.#fieldState.get(a.x, a.y)));
+        this.#animationState.put(new SwappingGem(b, a, this.#fieldState.get(b.x, b.y)));
+        this.#fieldState.clear(a.x, a.y);
+        this.#fieldState.clear(b.x, b.y);
+        /*let buffer = this.#fieldState.get(a.x, a.y);        
+        this.#fieldState.put(a.x, a.y, this.#fieldState.get(b.x, b.y));
+        this.#fieldState.put(b.x, b.y, buffer);*/
     }
 
     /* все анимации закончились и снова можно тыкать */

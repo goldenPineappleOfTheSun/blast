@@ -1,5 +1,6 @@
 import { AnimationsState } from '../animationsState.js';
 import { FallingGem } from '../fallingGem.js';
+import { SwappingGem } from '../swappingGem.js';
 import { gemTypes } from '../GemTypes.js';
 
 function createAnimationState() {
@@ -39,6 +40,42 @@ test('falling gem must accelerate', () => {
     gem.animate();
     let y3 = gem.y;
     expect(y3 - y2).not.toBe(y2 - y1);
+});
+
+test('swapping gem must always move (visually)', () => {
+    let gem = new SwappingGem({x:1, y:1}, {x:2, y:2}, gemTypes.red, 1000);
+    let x1 = gem.offset.x;
+    gem.animate();
+    let x2 = gem.offset.x;
+    gem.animate();
+    let x3 = gem.offset.x;
+    expect(x3).toBeGreaterThan(x2);
+    expect(x2).toBeGreaterThan(x1);
+});
+
+test('swapping gem must not change x or y, only offset', () => {
+    let gem = new SwappingGem({x:1, y:1}, {x:2, y:2}, gemTypes.red, 1000);
+    let x1 = gem.x;
+    gem.animate();
+    let x2 = gem.x;
+    expect(x1).toBe(1);
+    expect(x2).toBe(1);
+});
+
+test('swapping gem must always arrive in time', () => {
+    let gem = new SwappingGem({x:1, y:1}, {x:2.4, y:2.4}, gemTypes.red, 4);
+    let x1 = gem.offset.x;
+    let y1 = gem.offset.y;
+    gem.animate();
+    gem.animate();
+    gem.animate();
+    gem.animate();
+    let x2 = gem.offset.x;
+    let y2 = gem.offset.y;
+    expect(x1).toBe(0);
+    expect(y1).toBe(0);
+    expect(x2).toBe(1.4);
+    expect(x2).toBe(1.4);
 });
 
 test('state must find gems in requested cell or above (with offset)', () => {
