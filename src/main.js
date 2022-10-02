@@ -24,7 +24,10 @@ function init() {
     const scoreBonusesPanel = new ScoreBonusesPanel(app.screen.width - bonusesPanelWidth, progressPanelHeight, bonusesPanelWidth, app.screen.height - progressPanelHeight);
     state = new GemsState(cellsCount.x, cellsCount.y);
     state.fillRandom();
-    animationState = new AnimationsState();
+    animationState = new AnimationsState()
+        .handlerForGetCellState(state.get.bind(state))
+        .handlerForPutStaticGem(state.put.bind(state))
+        .handlerForGetFieldSize(() => state.size);
     gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
         .setRules(2)
         .setStateHolders(state, animationState)

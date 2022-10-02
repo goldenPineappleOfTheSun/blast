@@ -1,10 +1,28 @@
 import { FallingGem } from './fallingGem.js';
 
 export class AnimationsState {
-    #field;
+    #field; #getstate; #putgem; #getsize;
 
     constructor() {
         this.#field = [];
+    }
+
+    /* указать функцию (x:int, y:int) => cellState, которая определяет состояние ячейки из gemsState */
+    handlerForGetCellState(func) {
+        this.#getstate = func;
+        return this;
+    }
+
+    /* указать функцию (x:int, y:int) => void, которая умеет класть камень в gemsState */
+    handlerForPutStaticGem(func) {
+        this.#putgem = func;
+        return this;
+    }
+
+    /* указать функцию () => {x:int, y:int}, которая отдаёт размер поля */
+    handlerForGetFieldSize(func) {
+        this.#getsize = func;
+        return this;
     }
 
     /* добавить ещё один камень */
@@ -18,10 +36,26 @@ export class AnimationsState {
 
     /* вызывается в каждом кадре */
     animate(delta = 1) {
+        /* нормализуем */
         this.normalize();
+
+        /* обновляем */
         for (let gem of this.#field) {
             gem.animate(delta);
         }
+
+        let elementsToDestroy = [];
+        /* проверяем, вдруг произошло что-то важное для геймплея */
+        for (let a of this.#field) {
+            let r = this.#getstate
+            let x = a.x;
+            let y = (a.y + 1) ^ 0;
+            if (this.#getstate(x, y) || this.#getsize().y === y) {
+                this.#putgem(x, y - 1, a.type);
+                elementsToDestroy.push(a);
+            }
+        }
+        this.#field = this.#field.filter(x => !elementsToDestroy.find(y => x === y));
     }
 
     /* 

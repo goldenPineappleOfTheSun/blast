@@ -83,6 +83,7 @@ export class Cell {
         if (state !== null && astate === null) {
             /* в клетке камень */
             this.#gemSprite.alpha = 1;
+            this.#gemSprite.y = 0;
             this.#gemSprite.texture = readGemType(state).texture;
         }
     }
