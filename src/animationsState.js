@@ -46,9 +46,6 @@ export class AnimationsState {
 
     /* вызывается в каждом кадре */
     animate(delta = 1) {
-        /* нормализуем */
-        this.normalize();
-
         /* обновляем */
         for (let gem of this.#field) {
             gem.animate(delta);
@@ -70,6 +67,9 @@ export class AnimationsState {
         if (this.#field.length === 0) {
             this.#animationended();
         }
+
+        /* нормализуем */
+        this.normalize();
     }
 
     /* 
@@ -111,7 +111,7 @@ export class AnimationsState {
             for (let gem of col) {
                 if (lastY - gem.y < 1) {
                     gem.y = lastY - 1;
-                    gem.velocity = Math.min(gem.velocity, lastVel) - 0.03;
+                    gem.velocity = Math.min(gem.velocity, lastVel);
                 }
                 lastY = gem.y;
                 lastVel = gem.velocity;
