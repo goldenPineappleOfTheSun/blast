@@ -5,6 +5,7 @@ import { ScoreProgressPanel } from './scoreProgressPanel.js';
 import { ScoreBonusesPanel } from './scoreBonusesPanel.js';
 import { GameField } from './gameField.js';
 import { GemsState } from './gemsState.js';
+import { AnimationsState } from './animationsState.js';
 
 const cellsCount = {x: 5, y:5};
 const gameFieldPadding = 50;
@@ -12,6 +13,7 @@ const gameFieldPadding = 50;
 let started = false; 
 let gameField = null;
 let state = null;
+let animationState = null;
 
 const app = new Application({ width: 1000, height: 707 });
 
@@ -22,9 +24,10 @@ function init() {
     const scoreBonusesPanel = new ScoreBonusesPanel(app.screen.width - bonusesPanelWidth, progressPanelHeight, bonusesPanelWidth, app.screen.height - progressPanelHeight);
     state = new GemsState(cellsCount.x, cellsCount.y);
     state.fillRandom();
+    animationState = new AnimationsState();
     gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
-        .setRules(3)
-        .setStateHolders(state, {})
+        .setRules(2)
+        .setStateHolders(state, animationState)
         .setDimensions(
             cellsCount.x, 
             cellsCount.y, 
@@ -47,4 +50,5 @@ app.ticker.add((delta) => {
     }
 
     gameField.animate();
+    animationState.animate();
 });

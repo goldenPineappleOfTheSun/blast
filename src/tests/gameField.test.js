@@ -1,10 +1,11 @@
 import { GameField } from '../gameField.js';
 import { GemsState } from '../gemsState.js';
+import { AnimationsState } from '../animationsState.js';
 import { gemTypes } from '../GemTypes.js';
 
 
 const gemState = new GemsState(1, 1);
-const animationsState = {};
+const animationsState = new AnimationsState();
 
 function createExampleGemState() {
     return new GemsState(4, 4)
@@ -50,7 +51,6 @@ test('throws error if "start" called before state holders set', () => {
     const field = new GameField(0, 0).setStateHolders(gemState, animationsState).setDimensions(5, 5, 100, 100);
     expect(field.start).toThrow();
 });
-
 
 test('throws error if "start" called two times', () => {
     const field = new GameField(0, 0)
@@ -180,18 +180,34 @@ test('click must destroy packable gems', () => {
     const state1 = createExampleGemState();
     const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState).start();
     field1.click(0, 0);
-    field1.click(1, 1);
     expect(state1.get(0, 0)).toBe(gemTypes.blue);
+
+    field1.click(1, 1);
     expect(state1.get(1, 1)).toBe(null);
     expect(state1.get(0, 1)).toBe(null);
 
     const state2 = createExampleGemState();
     const field2 = createExampleField().setRules(5).setStateHolders(state2, animationsState).start();
     field2.click(0, 0);
-    field2.click(1, 1);
     expect(state2.get(0, 0)).toBe(gemTypes.blue);
+
+    field2.click(1, 1);
     expect(state2.get(1, 1)).toBe(gemTypes.yellow);
     expect(state2.get(0, 1)).toBe(gemTypes.yellow);
+});
+
+test('click must make upper gems falling', () => {
+    const state1 = createExampleGemState();
+    const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState).start();
+    field1.click(0, 0);
+    expect(state1.get(0, 0)).toBe(gemTypes.blue);
+
+    field1.click(1, 1);
+    expect(state1.get(0, 0)).toBe(null);
+    expect(state1.get(1, 0)).toBe(null);
+    expect(state1.get(2, 0)).toBe(gemTypes.red);
+    expect(state1.get(1, 1)).toBe(null);
+    expect(state1.get(0, 1)).toBe(null);
 });
 
 test('clicks dont do anything if start never called', () => {

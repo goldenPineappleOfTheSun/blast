@@ -3,7 +3,7 @@
     "start": "node dest/server.js",
     "build": "webpack",
     "restart": "webpack & node dest/server.js",
-    "test": "jest --env=jsdom"
+    "test": "jest --env=jsdom --silent"
   },
   "devDependencies": {
     "@babel/core": "^7.19.3",

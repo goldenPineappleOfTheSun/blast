@@ -2,7 +2,7 @@ import { Container, Graphics, Sprite } from 'pixi.js'
 import { readGemTexture } from './gemTypes.js'
 
 export class Cell {
-    #sprite; #gemSprite; #size; #position; #x; #y; #getstate; #onclick;
+    #sprite; #gemSprite; #size; #position; #x; #y; #getstate; #getanimationstate; #onclick;
 
     /*
     x, y - позиция спрайта в пикселях
@@ -42,6 +42,11 @@ export class Cell {
         return this;
     }
 
+    handlerForGetCurrentAnimationState(func) {
+        this.#getanimationstate = func;
+        return this;
+    }
+
     handlerForClick(func) {
         this.#onclick = func;
         return this;
@@ -52,18 +57,33 @@ export class Cell {
     }
 
     animate(delta) {
-        const state = this.#getstate();
-
-        /* в клетке пусто */
-        if (state === null) {
-            this.#gemSprite.alpha = 0;
-            return;
+        if (!this.#getstate) {
+            throw new Error("функция для получения состояния не установлена");
+        }
+        if (!this.#getanimationstate) {
+            throw new Error("функция для получения анимации не установлена");
         }
 
-        /* в клетке камень */
-        this.#gemSprite.alpha = 1;
-        this.#gemSprite.texture = readGemTexture(state);
+        const state = this.#getstate();
+        const astate = this.#getanimationstate().cell;
 
-        let tex = readGemTexture(state);
+        /* в клетке пусто */
+        if (state === null && astate === null) {
+            this.#gemSprite.alpha = 0;
+            return;
+        } 
+
+        if (state === null && astate !== null) {
+            /* в клетке есть падающий или анимированный камень */
+            this.#gemSprite.alpha = 1;
+            this.#gemSprite.texture = readGemTexture(astate.type);
+            this.#gemSprite.y = astate.offset * this.#size;
+        }
+
+        if (state !== null && astate === null) {
+            /* в клетке камень */
+            this.#gemSprite.alpha = 1;
+            this.#gemSprite.texture = readGemTexture(state);
+        }
     }
 }

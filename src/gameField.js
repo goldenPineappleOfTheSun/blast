@@ -1,5 +1,6 @@
-import * as PIXI from 'pixi.js'
+import { Container, Graphics } from 'pixi.js'
 import { Cell } from './cell.js';
+import { FallingGem } from './fallingGem.js';
 
 export class GameField {
     #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #bgSprite; #started; #size;
@@ -21,7 +22,7 @@ export class GameField {
     y - позиция в пикселях
     */
     constructor(x, y) {
-        this.#sprite = new PIXI.Container();
+        this.#sprite = new Container();
         this.#x = x;
         this.#y = y;
         this.#width = 0;
@@ -29,7 +30,7 @@ export class GameField {
         this.#gemSize = 0;
         this.#started = false;
 
-        this.#bgSprite = new PIXI.Graphics();
+        this.#bgSprite = new Graphics();
         this.#sprite.addChild(this.#bgSprite);
 
         this.#gems = [];
@@ -118,6 +119,7 @@ export class GameField {
                     i * this.#gemSize, j * this.#gemSize, this.#gemSize,
                     this.#fieldState, this.#animationState)
                     .handlerForGetCurrentState(() => this.#fieldState.get(i, j))
+                    .handlerForGetCurrentAnimationState(() => this.#animationState.get(i, j))
                     .handlerForClick(() => this.click(i, j));
                 this.#sprite.addChild(this.#gems[i][j].getSprite());
             }
@@ -134,7 +136,7 @@ export class GameField {
         if (!this.#started) {
             return; 
         }
-        
+
         const check = this.checkIfPackable(x, y);
         if (!check) {
             return;
@@ -142,6 +144,20 @@ export class GameField {
 
         for (let f of check) {
             this.#fieldState.clear(f.x, f.y);
+        }
+
+        for (let i=0; i<this.#size.x; i++) {
+            let inAir = false;
+            for (let j=this.#size.y-1; j>=0; j--) {
+                if (this.#fieldState.get(i, j) === null) {
+                    inAir = true;
+                    continue;
+                }
+                if (inAir) {
+                    this.#animationState.put(new FallingGem(i, j, this.#fieldState.get(i, j)));
+                    this.#fieldState.clear(i, j);
+                }
+            }
         }
     }
 
