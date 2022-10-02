@@ -154,7 +154,7 @@ export class GameField {
                     continue;
                 }
                 if (inAir) {
-                    this.#animationState.put(new FallingGem(i, j, this.#fieldState.get(i, j)));
+                    this.#animationState.put(new FallingGem(i, j, this.#fieldState.get(i, j), -0.03));
                     this.#fieldState.clear(i, j);
                 }
             }

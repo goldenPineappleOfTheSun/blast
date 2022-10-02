@@ -62,7 +62,7 @@ export class AnimationsState {
     get(x, y) {
         let cell = null;
         for (let gem of this.#field) {
-            if (Math.abs(gem.x - x) < 0.1 && (gem.y === y || (gem.y - y < 0 && gem.y - y > -1))) {    
+            if (Math.abs(gem.x - x) < 0.1 && gem.y - y <= 0.1 && gem.y - y >= -0.9) {    
                 cell = {
                     type: gem.type,
                     offset: gem.y - y

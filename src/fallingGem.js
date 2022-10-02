@@ -1,10 +1,13 @@
 export class FallingGem {
-    #type;
+    #type; #velocity; #maxvelocity; #acceleration;
 
-    constructor(x, y, type) {
+    constructor(x, y, type, initAccelerate = 0) {
         this.x = x;
         this.y = y;
         this.#type = type;
+        this.#acceleration = 0.003;
+        this.#maxvelocity = 0.2;
+        this.#velocity = initAccelerate;
     }
 
     get type() {
@@ -12,6 +15,9 @@ export class FallingGem {
     }
 
     animate() {
-        this.y += 0.01;
+        if (this.#velocity < this.#maxvelocity) {
+            this.#velocity += this.#acceleration;
+        }
+        this.y += this.#velocity;
     }
 }
