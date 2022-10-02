@@ -2,6 +2,7 @@ import { Container, Graphics } from 'pixi.js'
 import { Cell } from './cell.js';
 import { FallingGem } from './fallingGem.js';
 import { SwappingGem } from './swappingGem.js';
+import { dice } from './utils.js';
 
 const stages = {
     notStarted: 0,
@@ -202,21 +203,55 @@ export class GameField {
     b {x, y} - координаты второго камня
     */
     swap(a, b) {
-        if (this.#stage !== stages.clickable) {
+        if (this.#stage !== stages.clickable && this.#stage !== stages.swapping) {
             return;
         }
         this.#stage = stages.swapping;
-        this.#animationState.put(new SwappingGem(a, b, this.#fieldState.get(a.x, a.y)));
-        this.#animationState.put(new SwappingGem(b, a, this.#fieldState.get(b.x, b.y)));
+        this.#animationState.put(new SwappingGem(a, b, type || this.#fieldState.get(a.x, a.y), time));
+        this.#animationState.put(new SwappingGem(b, a, type || this.#fieldState.get(b.x, b.y), time));
         this.#fieldState.clear(a.x, a.y);
         this.#fieldState.clear(b.x, b.y);
-        /*let buffer = this.#fieldState.get(a.x, a.y);        
-        this.#fieldState.put(a.x, a.y, this.#fieldState.get(b.x, b.y));
-        this.#fieldState.put(b.x, b.y, buffer);*/
+    }
+
+    /*
+    проверяет, есть ли на поле возможные ходы, если нет, то перемешивает камни
+    */
+    shuffleIfNeeded() {
+        for (let i=0; i<this.#size.x; i++) {
+            for (let j=0; j<this.#size.y; j++) {
+                if (this.checkIfPackable(i, j)) {
+                    return;
+                }
+            }
+        }
+
+        let occupied = Array(this.#size.x).fill().map(()=>Array(this.#size.y).fill(null));
+
+        for (let i=0; i<this.#size.x; i++) {
+            for (let j=0; j<this.#size.y; j++) {
+                let x = dice(this.#size.x);
+                let y = dice(this.#size.y);
+                while (occupied[x][y]) {
+                    x = dice(this.#size.x);
+                    y = dice(this.#size.y);
+                }
+                occupied[x][y] = {x:i, y:j, type: this.#fieldState.get(i, j)};
+            }
+        }
+
+        for (let x=0; x<this.#size.x; x++) {
+            for (let y=0; y<this.#size.y; y++) {
+                const target = occupied[x][y];
+                this.#animationState.put(new SwappingGem({x, y}, target, this.#fieldState.get(x, y), 30));
+                this.#fieldState.clear(x, y);
+            }
+        }
+
     }
 
     /* все анимации закончились и снова можно тыкать */
     playersTurn() {
+        this.shuffleIfNeeded();
         this.#stage = stages.clickable;
     }
 

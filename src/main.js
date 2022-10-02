@@ -7,7 +7,7 @@ import { GameField } from './gameField.js';
 import { GemsState } from './gemsState.js';
 import { AnimationsState } from './animationsState.js';
 
-const cellsCount = {x:4, y:4};
+const cellsCount = {x:8, y:8};
 const gameFieldPadding = 50;
 
 let started = false; 
@@ -29,7 +29,7 @@ function init() {
         .handlerForPutStaticGem(state.put.bind(state))
         .handlerForGetFieldSize(() => state.size);
     gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
-        .setRules(4)
+        .setRules(9)
         .setStateHolders(state, animationState)
         .setDimensions(
             cellsCount.x, 
@@ -44,9 +44,7 @@ function init() {
     app.stage.addChild(scoreBonusesPanel.getSprite());
     app.stage.addChild(gameField.getSprite());
     
-    started = true; 
-
-    setTimeout(() => gameField.swap({x:0, y:2}, {x:3, y:3}), 2000);
+    started = true;
 }
 
 onResourcesLoaded(init);
