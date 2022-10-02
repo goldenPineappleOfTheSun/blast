@@ -41,6 +41,29 @@ test('get gem', () => {
     expect(state.get(1, 0)).toBe(null);
 });
 
+test('get gem from outside', () => {
+    const state = new GemsState(3, 3);
+    expect(state.get(-1, 0)).toBe(null);
+    expect(state.get(3, 0)).toBe(null);
+    expect(state.get(0, -1)).toBe(null);
+    expect(state.get(0, 3)).toBe(null);
+    expect(state.get(-1, -1)).toBe(null);
+    expect(state.get(3, 3)).toBe(null);
+});
+
+test('get gem from a border or corner', () => {
+    const state = new GemsState(3, 3);
+    for (let i=0; i<3; i++) {
+        for (let j=0; j<3; j++) {
+            state.put(i, j, gemTypes.blue);
+        }
+    }
+    expect(state.get(0, 0)).toBe(gemTypes.blue);
+    expect(state.get(2, 0)).toBe(gemTypes.blue);
+    expect(state.get(2, 2)).toBe(gemTypes.blue);
+    expect(state.get(0, 2)).toBe(gemTypes.blue);
+});
+
 test('custom possibleTypes argument is optional', () => {
     const state = new GemsState(3, 3);
 });

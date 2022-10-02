@@ -23,6 +23,7 @@ function init() {
     state = new GemsState(cellsCount.x, cellsCount.y);
     state.fillRandom();
     gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
+        .setRules(4)
         .setStateHolders(state, {})
         .setDimensions(
             cellsCount.x, 

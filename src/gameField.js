@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import { Cell } from './cell.js';
 
 export class GameField {
-    #sprite; #x; #y; #width; #height; #gemSize; #bgSprite; #started; #size;
+    #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #bgSprite; #started; #size;
 
     /* спрайты камней. не несут логики - только отображение. каждый гем отвечает за отображение одной ячейки 
     (и не падает вниз вместе с камнями, ничего такого, просто следит за одной ячейкой и отрисовывает её состояние) */
@@ -62,6 +62,14 @@ export class GameField {
         return this;
     }
 
+    /*
+    minPackSize - сколько камней должно быть соседями, чтобы их можно было одновременно собрать
+    */
+    setRules(minPackSize) {
+        this.#rule_minPackSize = minPackSize;
+        return this;
+    }
+
     get gemSize() {
         return this.#gemSize;
     }
@@ -91,6 +99,9 @@ export class GameField {
         if (!this.#fieldState || !this.#animationState) {
             throw new Error('Перед запуском надо вызвать setStateHolders'); 
         }
+        if (!this.#rule_minPackSize) {
+            throw new Error('Перед запуском надо вызвать setRules'); 
+        }
         this.#started = true;
         this.#bgSprite.beginFill(0xff9800);
         this.#bgSprite.drawRect(-20, -20, this.#width + 40, this.#height + 40);
@@ -107,7 +118,7 @@ export class GameField {
                     i * this.#gemSize, j * this.#gemSize, this.#gemSize,
                     this.#fieldState, this.#animationState)
                     .handlerForGetCurrentState(() => this.#fieldState.get(i, j))
-                    .handlerForClick(() => alert(i));
+                    .handlerForClick(() => alert(this.checkIfPackable(i, j)));
                 this.#sprite.addChild(this.#gems[i][j].getSprite());
             }
         }
@@ -117,6 +128,36 @@ export class GameField {
 
     getSprite() {
         return this.#sprite;
+    }
+
+    checkIfPackable(x, y) {
+        const state = (x, y) => this.#fieldState.get(x, y);
+        if (!state(x, y)) {
+            return false;
+        }
+        let found = 0;
+        const color = state(x, y);
+        let checked = {x:{y:true}};
+        const check = (x, y) => {
+            if (checked[x] && checked[x][y]) {
+                return;
+            }
+            if (!checked[x]) {
+                checked[x] = {};
+            }
+            checked[x][y] = true;
+
+            if (state(x, y) === color) {
+                found += 1;
+                check(x - 1, y);
+                check(x + 1, y);
+                check(x, y - 1);
+                check(x, y + 1);
+            }
+        }
+        check(x, y);
+
+        return found >= this.#rule_minPackSize;        
     }
 
     animate(delta) {

@@ -36,10 +36,11 @@ export class GemsState {
     type - берётся из перечисления gemTypes
     */
     put(x, y, type) {
-        if (x < 0 || y < 0 || x > this.#field.length || y > this.#field[0].length) {
+        if (x < 0 || y < 0 || x >= this.#field.length || y >= this.#field[0].length) {
             throw new Error('Нельзя положить камень за пределы поля');
         }
         this.#field[x][y] = type;
+        return this;
     }
 
     /*
@@ -57,7 +58,7 @@ export class GemsState {
     посмотреть, какой камень лежит в координатах x y
     */
     get(x, y) {
-        if (x < 0 || y < 0 || x > this.#field.length || y > this.#field[0].length) {
+        if (x < 0 || y < 0 || x >= this.#field.length || y >= this.#field[0].length) {
             return null;
         }
         return this.#field[x][y];
