@@ -28,8 +28,4 @@ const gemTypeInfo = {
 
 export function readGemType(type) {
     return gemTypeInfo[type];
-} 
-
-export function readGemTexture(type) {
-    return gemTypeInfo[type].texture;
-} 
+}
