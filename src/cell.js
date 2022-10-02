@@ -56,12 +56,12 @@ export class Cell {
 
         /* в клетке пусто */
         if (state === null) {
-            this.#gemSprite.opacity = 0;
+            this.#gemSprite.alpha = 0;
             return;
         }
 
         /* в клетке камень */
-        this.#gemSprite.opacity = 1;
+        this.#gemSprite.alpha = 1;
         this.#gemSprite.texture = readGemTexture(state);
 
         let tex = readGemTexture(state);

@@ -44,6 +44,17 @@ export class GemsState {
     }
 
     /*
+    убрать камень из этой ячейки (выставить в null)
+    */
+    clear(x, y) {
+        if (x < 0 || y < 0 || x >= this.#field.length || y >= this.#field[0].length) {
+            return;
+        }
+        this.#field[x][y] = null;
+        return this;
+    }
+
+    /*
     заполняет всё поле случайными камнями из списка допустимых
     */
     fillRandom() {

@@ -118,7 +118,7 @@ export class GameField {
                     i * this.#gemSize, j * this.#gemSize, this.#gemSize,
                     this.#fieldState, this.#animationState)
                     .handlerForGetCurrentState(() => this.#fieldState.get(i, j))
-                    .handlerForClick(() => alert(this.checkIfPackable(i, j)));
+                    .handlerForClick(() => this.click(i, j));
                 this.#sprite.addChild(this.#gems[i][j].getSprite());
             }
         }
@@ -130,12 +130,23 @@ export class GameField {
         return this.#sprite;
     }
 
+    click(x, y) {
+        const check = this.checkIfPackable(x, y);
+        if (!check) {
+            return;
+        }
+
+        for (let f of check) {
+            this.#fieldState.clear(f.x, f.y);
+        }
+    }
+
     checkIfPackable(x, y) {
         const state = (x, y) => this.#fieldState.get(x, y);
         if (!state(x, y)) {
             return false;
         }
-        let found = 0;
+        let found = [];
         const color = state(x, y);
         let checked = {x:{y:true}};
         const check = (x, y) => {
@@ -148,7 +159,7 @@ export class GameField {
             checked[x][y] = true;
 
             if (state(x, y) === color) {
-                found += 1;
+                found.push({x, y});
                 check(x - 1, y);
                 check(x + 1, y);
                 check(x, y - 1);
@@ -157,7 +168,7 @@ export class GameField {
         }
         check(x, y);
 
-        return found >= this.#rule_minPackSize;        
+        return found.length >= this.#rule_minPackSize ? found : false;        
     }
 
     animate(delta) {
