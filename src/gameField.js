@@ -99,9 +99,10 @@ export class GameField {
         this.#sprite.x = this.#x;
         this.#sprite.y = this.#y;
 
+        /* кладём камни снизу вверх, чтобы pixi отрисовывал нижние позади верхних */
         this.#gems = Array(this.#size.x).fill().map(()=>Array(this.#size.y).fill(null));
-        for (let i=0; i<this.#size.x; i++) {
-            for (let j=0; j<this.#size.y; j++) {
+        for (let i=this.#size.x-1; i>=0; i--) {
+            for (let j=this.#size.y-1; j>=0; j--) {
                 this.#gems[i][j] = new Cell(
                     {x:i * this.#gemSize, y:j * this.#gemSize},
                     {x:i, y:j}, this.#gemSize - 1,
