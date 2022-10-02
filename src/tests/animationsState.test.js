@@ -48,3 +48,14 @@ test('state must find gems in requested cell or above (with offset)', () => {
     expect(astate.get(1, 1).cell).toBe(null);
     expect(astate.get(2, 1).cell).toBe(null);
 });
+
+test('state can detect overllaped gems', () => {
+    const astate = createAnimationState();
+    astate.put(new FallingGem(1, 1, gemTypes.red, 0.1));
+    expect(astate.get(1, 1).cell.type).toBe(gemTypes.red);
+    expect(astate.get(2, 1).cell).toBe(null);
+    astate.animate();
+    expect(astate.get(1, 2).cell.type).toBe(gemTypes.red);
+    expect(astate.get(1, 1).cell).toBe(null);
+    expect(astate.get(2, 1).cell).toBe(null);
+});

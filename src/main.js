@@ -7,7 +7,7 @@ import { GameField } from './gameField.js';
 import { GemsState } from './gemsState.js';
 import { AnimationsState } from './animationsState.js';
 
-const cellsCount = {x: 5, y:5};
+const cellsCount = {x: 8, y:8};
 const gameFieldPadding = 50;
 
 let started = false; 
@@ -49,6 +49,6 @@ app.ticker.add((delta) => {
         return;
     }
 
-    gameField.animate();
-    animationState.animate();
+    gameField.animate(delta);
+    animationState.animate(delta);
 });

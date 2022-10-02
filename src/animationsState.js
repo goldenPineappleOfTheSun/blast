@@ -17,36 +17,49 @@ export class AnimationsState {
     }
 
     /* вызывается в каждом кадре */
-    animate() {
-        for (let gem of this.#field) {
-            gem.animate();
-        }
-
+    animate(delta = 1) {
         this.normalize();
+        for (let gem of this.#field) {
+            gem.animate(delta);
+        }
     }
 
-    /* борьба с нежелательными состояниями */
+    /* 
+    борьба с нежелательными состояниями 
+    разделениt визуальной части (Cell) и логики (GemsState & AnimationsState)
+    привела меня к сложностям, к тому что Cell может справиться не с каждым состоянием,
+    которое предлагает ему AnimationsState
+    Так что либо делаем Cell и AnimationsState.get() более универсальным, либо просим AnimationsState быть вежливее
+    я выбрал второе
+    */
     normalize() {
         /* убеждаемся, что падающие камни не наезжают друг на друга */
-        //let limit = 1000;
-        //let overlapped = true;
-        //while (overlapped) {
-        //    limit--;
-        //    if (limit<0)throw"!";
-        //    overlapped = false;
-        //    for (let a of this.#field) {
-        //        for (let b of this.#field) {
-        //            if (Math.abs(a.y - b.y) < 1) {
-        //                overlapped = true;
-        //                if (a.y > b.y) {
-        //                    b.y = a.y - 1;
-        //                } else {
-        //                    a.y = b.y - 1;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        let limit = 100;
+        let overlapped = true;
+        while (overlapped) {
+            limit--;
+            if (limit < 0) {
+                console.warn("normalize не смогла навести порядок");
+                return;
+            }
+            overlapped = false;
+            for (let i=0; i<this.#field.length; i++) {
+                for (let j=i+1; j<this.#field.length; j++) {
+                    let a = this.#field[i]; 
+                    let b = this.#field[j]; 
+                    if (Math.abs(a.x - b.x) < 0.1 && Math.abs(a.y - b.y) < 1) {
+                        overlapped = true;
+                        if (a.y > b.y) {
+                            b.y = a.y - 1;
+                            b.velocity = Math.min(a.velocity, b.velocity);
+                        } else {
+                            a.y = b.y - 1;
+                            a.velocity = Math.min(a.velocity, b.velocity);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /* 
@@ -62,7 +75,7 @@ export class AnimationsState {
     get(x, y) {
         let cell = null;
         for (let gem of this.#field) {
-            if (Math.abs(gem.x - x) < 0.1 && gem.y - y <= 0.1 && gem.y - y >= -0.9) {    
+            if (Math.abs(gem.x - x) < 0.1 && gem.y - y <= 0 && gem.y - y > -1) {    
                 cell = {
                     type: gem.type,
                     offset: gem.y - y

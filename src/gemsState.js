@@ -63,6 +63,7 @@ export class GemsState {
                 this.#field[i][j] = randomElement(this.#possibleTypes);
             }
         }
+        return this;
     }
 
     /*
