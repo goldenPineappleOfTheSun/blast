@@ -2,6 +2,7 @@
   "scripts": {
     "start": "node dest/server.js",
     "build": "webpack",
+    "restart": "webpack & node dest/server.js",
     "test": "jest --env=jsdom"
   },
   "devDependencies": {

@@ -10,13 +10,26 @@ export const gemTypes = {
 
 const gemTypeInfo = {
     [gemTypes.blue]: {
-        texture: getTexture('blue')
+        get texture() { return getTexture('blue')},
+    },
+    [gemTypes.purple]: {
+        get texture() { return  getTexture('purple')},
     },
     [gemTypes.red]: {
-        texture: getTexture('red')
+        get texture() { return  getTexture('red')},
+    },
+    [gemTypes.yellow]: {
+        get texture() { return  getTexture('yellow')},
+    },
+    [gemTypes.green]: {
+        get texture() { return  getTexture('green')},
     }
 }
 
 export function readGemType(type) {
     return gemTypeInfo[type];
+} 
+
+export function readGemTexture(type) {
+    return gemTypeInfo[type].texture;
 } 

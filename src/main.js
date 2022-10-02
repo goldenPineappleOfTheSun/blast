@@ -9,6 +9,10 @@ import { GemsState } from './gemsState.js';
 const cellsCount = {x: 5, y:5};
 const gameFieldPadding = 30;
 
+let started = false; 
+let gameField = null;
+let state = null;
+
 const app = new Application({ width: 1000, height: 707 });
 
 document.body.appendChild(app.view);
@@ -16,22 +20,30 @@ document.body.appendChild(app.view);
 function init() {
     const scoreProgressPanel = new ScoreProgressPanel(0, 0, app.screen.width, progressPanelHeight);
     const scoreBonusesPanel = new ScoreBonusesPanel(app.screen.width - bonusesPanelWidth, progressPanelHeight, bonusesPanelWidth, app.screen.height - progressPanelHeight);
-    const gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
+    state = new GemsState(cellsCount.x, cellsCount.y);
+    state.fillRandom();
+    gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
+        .setStateHolders(state, {})
         .setDimensions(
             cellsCount.x, 
             cellsCount.y, 
             app.screen.width - bonusesPanelWidth - gameFieldPadding * 2, 
             app.screen.height - progressPanelHeight - 60)
         .start();
-    const state = new GemsState(cellsCount.x, cellsCount.y);
 
     app.stage.addChild(scoreProgressPanel.getSprite());
     app.stage.addChild(scoreBonusesPanel.getSprite());
     app.stage.addChild(gameField.getSprite());
-
-    let a  =getTexture;
-    let b  =Texture;
-    debugger
+    
+    started = true; 
 }
 
 onResourcesLoaded(init);
+
+app.ticker.add((delta) => {
+    if (!started) {
+        return;
+    }
+
+    gameField.animate();
+});

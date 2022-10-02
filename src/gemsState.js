@@ -1,4 +1,4 @@
-import { gemTypes } from './GemTypes.js';
+import { gemTypes } from './gemTypes.js';
 import { randomElement } from './utils.js';
 
 const defaultGemTypes = [gemTypes.blue, gemTypes.red, gemTypes.green];
@@ -46,7 +46,11 @@ export class GemsState {
     заполняет всё поле случайными камнями из списка допустимых
     */
     fillRandom() {
-        this.#field = Array(this.#size.x).fill().map(()=>Array(this.#size.y).fill(randomElement(this.#possibleTypes)));
+        for (let i=0; i<this.#size.x; i++) {
+            for (let j=0; j<this.#size.y; j++) {
+                this.#field[i][j] = randomElement(this.#possibleTypes);
+            }
+        }
     }
 
     /*

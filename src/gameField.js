@@ -8,6 +8,14 @@ export class GameField {
     (и не падает вниз вместе с камнями, ничего такого, просто следит за одной ячейкой и отрисовывает её состояние) */
     #gems;
 
+    /* состояние игрового поля, важное для игрового процесса (никаких анимаций) */
+    #fieldState;
+
+    /* состояние анимаций и прочих мелочей. Так их удобнее тестировать и теперь анимацию можно полностью
+    относить к бизнес-логике. Например, падающий камень должен перестать быть падающим и стать настоящим,
+    когда он долетит до нижележащего камня - это логика или визуал? */
+    #animationState;
+
     /*
     x - позиция в пикселях
     y - позиция в пикселях
@@ -44,6 +52,16 @@ export class GameField {
         return this;
     }
 
+    /*
+    fieldState - состояние игрового поля, важное для игрового процесса (никаких анимаций)
+    animationState - состояние анимаций и прочих мелочей. Так их удобнее тестировать и теперь анимацию можно полностью относить к бизнес-логике.
+    */
+    setStateHolders(fieldState, animationState) {
+        this.#fieldState = fieldState;
+        this.#animationState = animationState;
+        return this;
+    }
+
     get gemSize() {
         return this.#gemSize;
     }
@@ -70,6 +88,9 @@ export class GameField {
         if (!this.#gemSize || !this.#width || !this.#height) {
             throw new Error('Перед запуском надо вызвать setDimensions'); 
         }
+        if (!this.#fieldState || !this.#animationState) {
+            throw new Error('Перед запуском надо вызвать setStateHolders'); 
+        }
         this.#started = true;
         this.#bgSprite.beginFill(0xff9800);
         this.#bgSprite.drawRect(0, 0, this.#width, this.#height);
@@ -81,7 +102,10 @@ export class GameField {
         this.#gems = Array(this.#size.x).fill().map(()=>Array(this.#size.y).fill(null));
         for (let i=0; i<this.#size.x; i++) {
             for (let j=0; j<this.#size.y; j++) {
-                this.#gems[i][j] = new Cell(i * this.#gemSize, j * this.#gemSize, this.#gemSize);
+                this.#gems[i][j] = new Cell(
+                    {x:i * this.#gemSize, y:j * this.#gemSize},
+                    {x:i, y:j}, this.#gemSize,
+                    this.#fieldState, this.#animationState);
                 this.#sprite.addChild(this.#gems[i][j].getSprite());
             }
         }
@@ -91,5 +115,13 @@ export class GameField {
 
     getSprite() {
         return this.#sprite;
+    }
+
+    animate(delta) {
+        for (let i=0; i<this.#size.x; i++) {
+            for (let j=0; j<this.#size.y; j++) {
+                this.#gems[i][j].animate(delta);
+            }
+        }
     }
 }
