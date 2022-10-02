@@ -154,6 +154,20 @@ export class GameField {
             this.#fieldState.clear(f.x, f.y);
         }
 
+        /* подкидываем новые блоки сверху */
+        for (let i=0; i<this.#size.x; i++) {
+            let count = 0;
+            for (let j=0; j<this.#size.y; j++) {
+                if (this.#fieldState.get(i, j) === null) {
+                    count++;
+                }
+            }
+            for (let j=1; j<=count; j++) {
+                this.#animationState.put(new FallingGem(i, -j, this.#fieldState.chooseRandomColor(), -0.05));
+            }
+        }
+
+        /* роняем блоки, которые зависли в воздухе */
         for (let i=0; i<this.#size.x; i++) {
             let inAir = false;
             for (let j=this.#size.y-1; j>=0; j--) {

@@ -7,6 +7,10 @@ export class AnimationsState {
         this.#field = [];
     }
 
+    count() {
+        return this.#field.length;
+    }
+
     /* указать функцию (x:int, y:int) => cellState, которая определяет состояние ячейки из gemsState */
     handlerForGetCellState(func) {
         this.#getstate = func;
@@ -77,31 +81,40 @@ export class AnimationsState {
     я выбрал второе
     */
     normalize() {
-        /* убеждаемся, что падающие камни не наезжают друг на друга */
-        let limit = 100;
-        let overlapped = true;
-        while (overlapped) {
-            limit--;
-            if (limit < 0) {
-                console.warn("normalize не смогла навести порядок");
-                return;
+        /* #1 убеждаемся, что падающие камни не наезжают друг на друга */
+
+        if (this.#field.length===0) {
+            return
+        }
+
+        let columns = []
+
+        for (let gem of this.#field) {
+            if (!columns[gem.x]) {
+                columns[gem.x] = []
             }
-            overlapped = false;
-            for (let i=0; i<this.#field.length; i++) {
-                for (let j=i+1; j<this.#field.length; j++) {
-                    let a = this.#field[i]; 
-                    let b = this.#field[j]; 
-                    if (Math.abs(a.x - b.x) < 0.1 && Math.abs(a.y - b.y) < 1) {
-                        overlapped = true;
-                        if (a.y > b.y) {
-                            b.y = a.y - 1;
-                            b.velocity = Math.min(a.velocity, b.velocity) - 0.01;
-                        } else {
-                            a.y = b.y - 1;
-                            a.velocity = Math.min(a.velocity, b.velocity) - 0.01;
-                        }
-                    }
+            columns[gem.x].push(gem);
+        }
+
+        for (let col of columns) {
+            if (col) {
+                col.sort((a, b) => a.y > b.y ? -1 : a.y < b.y ? 1 : 0)
+            }
+        }
+
+        for (let col of columns) {
+            if (!col) {
+                continue;
+            }
+            let lastY = Infinity;
+            let lastVel = 0;
+            for (let gem of col) {
+                if (lastY - gem.y < 1) {
+                    gem.y = lastY - 1;
+                    gem.velocity = Math.min(gem.velocity, lastVel)-0.01;
                 }
+                lastY = gem.y;
+                lastVel = gem.velocity;
             }
         }
     }

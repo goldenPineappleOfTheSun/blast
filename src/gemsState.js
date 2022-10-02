@@ -60,10 +60,17 @@ export class GemsState {
     fillRandom() {
         for (let i=0; i<this.#size.x; i++) {
             for (let j=0; j<this.#size.y; j++) {
-                this.#field[i][j] = randomElement(this.#possibleTypes);
+                this.#field[i][j] = this.chooseRandomColor();
             }
         }
         return this;
+    }
+
+    /*
+    возвращает случайный камень из возможных
+    */
+    chooseRandomColor() {
+        return randomElement(this.#possibleTypes);
     }
 
     /*

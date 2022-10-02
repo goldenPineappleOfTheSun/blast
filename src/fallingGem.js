@@ -5,7 +5,7 @@ export class FallingGem {
         this.x = x;
         this.y = y;
         this.#type = type;
-        this.#acceleration = 0.004;
+        this.#acceleration = 0.006;
         this.#maxvelocity = 0.3;
         this.velocity = initAccelerate;
         this.rotationSpeed = -0.005 + Math.random() * 0.01;

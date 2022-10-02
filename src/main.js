@@ -7,7 +7,7 @@ import { GameField } from './gameField.js';
 import { GemsState } from './gemsState.js';
 import { AnimationsState } from './animationsState.js';
 
-const cellsCount = {x: 8, y:8};
+const cellsCount = {x:8, y:8};
 const gameFieldPadding = 50;
 
 let started = false; 
