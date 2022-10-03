@@ -1,5 +1,6 @@
 let minPackSize = 2;
 let moves = 10;
+let score = 0;
 let target = 100;
 
 export function init(_minPackSize, _moves, _target) {
@@ -22,14 +23,18 @@ export function getTargetScore() {
     return target;
 }
 
+export function getScore() {
+    return score;
+}
+
 export function move() {
     moves--;
     updateMoves(moves);
 }
 
-export function score(n) {
+export function addScore(n) {
     score += n;
-    updateScore(moves);
+    updateScore(score);
 }
 
 function updateMoves(n) {

@@ -6,7 +6,7 @@ import { Bubble } from './bubble.js';
 import { dice, sleep } from './utils.js';
 import { showCurtain, hideCurtain } from './curtain.js';
 import { createParticle } from './particles.js';
-import { getMinPackSize as packSize, move as minusMove } from './scores.js';
+import { getMinPackSize as packSize, move as minusMove, addScore } from './scores.js';
 
 const stages = {
     notStarted: 0,
@@ -217,6 +217,11 @@ export class GameField {
                     this.#fieldState.clear(i, j);
                 }
             }
+        }
+
+        for (let x in check) {
+            await sleep(50);
+            addScore(+x);
         }
     }
 
