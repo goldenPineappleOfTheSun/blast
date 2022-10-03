@@ -1,7 +1,7 @@
 import { gemColors } from './gemTypes.js';
 import { randomElement } from './utils.js';
 
-const defaultGemColors = [gemColors.blue, gemColors.red, gemColors.green];
+const defaultGemColors = [gemColors.blue, gemColors.red, gemColors.green, gemColors.purple, gemColors.yellow];
 
 /*
 текущее состояние поля без учёта анимаций

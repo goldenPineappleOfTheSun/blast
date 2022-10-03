@@ -6,7 +6,7 @@ import { ScoreBonusesPanel } from './scoreBonusesPanel.js';
 import { GameField } from './gameField.js';
 import { GemsState } from './gemsState.js';
 import { AnimationsState } from './animationsState.js';
-import { init as initCurtain } from './curtain.js';
+import { init as initCurtain, showCurtain, hideCurtain } from './curtain.js';
 import { init as initParticles, animateParticles } from './particles.js';
 import { init as initRules, animate as animateScore } from './scores.js'
 
@@ -14,6 +14,7 @@ const cellsCount = {x:8, y:8};
 const gameFieldPadding = 50;
 
 let started = false; 
+let paused = false;
 let gameField = null;
 let state = null;
 let animationState = null;
@@ -53,13 +54,23 @@ function init() {
     gameField.getSprite().addChild(animationState.getSprite());
 
     app.stage.addChild(initCurtain('shuffle-anouncer', app.screen.width, app.screen.height));
+    app.stage.addChild(initCurtain('pause', app.screen.width, app.screen.height));
     app.stage.addChild(initParticles());
-    initRules(2, 25, 1500);
+    initRules(2, 25, 2500);
 
     let dom_body = document.querySelector('body');
     if (dom_body) {
         dom_body.classList.add('loaded');
     }
+    handlerForPauseClick(() => {
+        if (paused) {
+            paused = false;
+            hideCurtain('pause');
+        } else {
+            paused = true;
+            showCurtain('pause', 'Пауза');
+        }
+    });
     
     started = true;
 }
@@ -67,7 +78,7 @@ function init() {
 onResourcesLoaded(init);
 
 app.ticker.add((delta) => {
-    if (!started) {
+    if (!started || paused) {
         return;
     }
 

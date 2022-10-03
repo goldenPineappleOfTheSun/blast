@@ -279,7 +279,7 @@
         <div class="money-panel">
             <div class="money-text">6477</div>
         </div>
-        <div class="pause-button"></div>
+        <div class="pause-button" onclick="pause()"></div>
         <div class="score-container">
             <div class="moves">
                 <div class="moves-text">12</div>
@@ -302,5 +302,13 @@
     </div>
 
     <div class="bg"></div>
+
+    <script>
+        let pause = () => {};
+
+        function handlerForPauseClick(func) {
+            pause = func;
+        }
+    </script>
 </body>
 </html>
