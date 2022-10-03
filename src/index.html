@@ -111,12 +111,14 @@
         .pause-button {
             position: absolute;
             top: 5px;
-            right: 70px;
+            right: 50%;
+            transform: translateX(440px);
             width: 80px;
             height: 80px;
             background: url(img/pause-button.png);
             background-size: 100%;
             background-repeat: no-repeat;
+            z-index: 11;
         }
         .pause-button:hover:after {
             content: '';
@@ -243,12 +245,34 @@
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
             width: 100vw;
+            height: 100%;
             height: 100vh;
             filter: blur(10px) brightness(0.5);
             background: url(img/under-the-sea-bg.jpg);
             background-size: 100%;
             z-index: -10;
+        }
+        .curtain {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            width: 100vw;
+            height: 100%;
+            height: 100vh;
+            background: #00000088;
+            color: #ffffff;
+            font-size: 40px;
+            z-index: 10;
+        }
+        .curtain-text {
+            position: relative;
+            bottom: 100px;
         }
         @media (max-width: 1000px) {
             body.loaded {
@@ -279,7 +303,6 @@
         <div class="money-panel">
             <div class="money-text">6477</div>
         </div>
-        <div class="pause-button" onclick="pause()"></div>
         <div class="score-container">
             <div class="moves">
                 <div class="moves-text">12</div>
@@ -301,13 +324,29 @@
         </div>
     </div>
 
+    <div class="pause-button" onclick="dom.pause()"></div>
+
     <div class="bg"></div>
 
-    <script>
-        let pause = () => {};
+    <div class="curtain">
+        <div class="curtain-text"></div>
+    </div>
 
-        function handlerForPauseClick(func) {
-            pause = func;
+    <script>
+        const dom = {
+            pause: () => {
+
+            },
+            handlerForPauseClick(func) {            
+                dom.pause = func;
+            },
+            showCurtain(text) {
+                document.querySelector('.curtain').style.display = "flex";
+                document.querySelector('.curtain-text').innerHTML = text;
+            },
+            hideCurtain() {
+                document.querySelector('.curtain').style.display = "none";
+            }
         }
     </script>
 </body>

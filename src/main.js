@@ -53,16 +53,14 @@ function init() {
     app.stage.addChild(gameField.getSprite());
     gameField.getSprite().addChild(animationState.getSprite());
 
-    app.stage.addChild(initCurtain('shuffle-anouncer', app.screen.width, app.screen.height));
-    app.stage.addChild(initCurtain('pause', app.screen.width, app.screen.height));
     app.stage.addChild(initParticles());
-    initRules(2, 25, 2500);
+    initRules(2, 25, 1500);
 
     let dom_body = document.querySelector('body');
     if (dom_body) {
         dom_body.classList.add('loaded');
     }
-    handlerForPauseClick(() => {
+    dom.handlerForPauseClick(() => {
         if (paused) {
             paused = false;
             hideCurtain('pause');
