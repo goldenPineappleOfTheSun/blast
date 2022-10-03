@@ -13,7 +13,7 @@ const stages = {
 }
 
 export class GameField {
-    #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #bgSprite; #maskSprite; #stage; #size;
+    #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #maskSprite; #stage; #size;
 
     /* спрайты камней. не несут логики - только отображение. каждый гем отвечает за отображение одной ячейки 
     (и не падает вниз вместе с камнями, ничего такого, просто следит за одной ячейкой и отрисовывает её состояние) */
@@ -40,9 +40,7 @@ export class GameField {
         this.#gemSize = 0;
         this.#stage = stages.notStarted;
 
-        this.#bgSprite = new Graphics();
         this.#maskSprite = new Graphics();
-        this.#sprite.addChild(this.#bgSprite);
         this.#sprite.addChild(this.#maskSprite);
         this.#sprite.mask = this.#maskSprite;
 
@@ -63,6 +61,7 @@ export class GameField {
         this.#height = this.#gemSize * h;
         this.#x = this.#x + (maxWidth - this.#width) / 2;
         this.#y = this.#y;
+        dom_setupFieldBg(this.#x - 20, this.#y - 20, this.#width + 60, this.#height + 60);
         return this;
     }
 
@@ -117,10 +116,6 @@ export class GameField {
             throw new Error('Перед запуском надо вызвать setRules'); 
         }
         this.#stage = stages.clickable;
-
-        this.#bgSprite.beginFill(0xff9800);
-        this.#bgSprite.drawRect(-20, -20, this.#width + 40, this.#height + 40);
-        this.#bgSprite.endFill();
 
         this.#maskSprite.beginFill(0xff9800);
         this.#maskSprite.drawRect(-20, -20, this.#width + 40, this.#height + 40);

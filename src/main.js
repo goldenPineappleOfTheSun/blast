@@ -16,7 +16,12 @@ let gameField = null;
 let state = null;
 let animationState = null;
 
-const app = new Application({ width: 1000, height: 707 });
+const app = new Application({ 
+    view: document.querySelector('.main-canvas'), 
+    width: 1000, 
+    height: 707, 
+    transparent: true, 
+    backgroundColor: 0x000000 });
 
 document.body.appendChild(app.view);
 

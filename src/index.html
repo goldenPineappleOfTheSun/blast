@@ -12,9 +12,33 @@
         body {
             font-family: marvin;
         }
+        canvas {
+            z-index: 1;
+        }
+        .field-bg {
+            position: absolute;
+            box-sizing: border-box;
+            border: 30px solid transparent;
+            border-radius: 30px;
+            border-image: url(img/field-bg.png) 120 round;
+            background: #001e3b;
+            z-index: -1;
+        }
     </style>    
 </head>
 <body>
-    
+    <div class="field-bg">
+        
+    </div>
+
+    <script>
+        function dom_setupFieldBg(x, y, w, h) {
+            let a = document.querySelector('.field-bg');
+            a.style.left = `${x}px`;
+            a.style.top = `${y}px`;
+            a.style.width = `${w}px`;
+            a.style.height = `${h}px`;
+        }
+    </script>
 </body>
 </html>
