@@ -21,9 +21,13 @@
         canvas {
             z-index: 1;
         }
-        .container {
+        .container-below {
             position: absolute;
             z-index: -1;
+        }
+        .container-above {
+            position: absolute;
+            z-index: 2;
         }
         .field {
             position: absolute;
@@ -95,6 +99,18 @@
             background-size: 100%;
             background-repeat: no-repeat;
         }
+        .pause-button:hover:after {
+            content: '';
+            position: absolute;
+            left: 5%;
+            top: 0;
+            width: 90%;
+            height: 90%;
+            background: #0088ff61;
+            mix-blend-mode: lighten;
+            border-radius: 40%;
+            box-shadow: 0 0 10px #1b93fe;
+        }
         .score-container {
             position: absolute;
             display: flex;
@@ -163,14 +179,27 @@
             right: 75px;
             width: 300px;
             height: 150px;
-            bottom: 130px;
+            top: 430px;
         }
         .bonus {
+            position: relative;
             width: 100px;
             height: 100px;
             background: url(img/bonus-panel.png);
             background-size: 100%;
             background-repeat: no-repeat;
+        }
+        .bonus:hover:after {
+            content: '';
+            position: absolute;
+            left: 10%;
+            top: 5%;
+            width: 80%;
+            height: 85%;
+            background: #ed17fa78;
+            mix-blend-mode: lighten;
+            border-radius: 20%;
+            box-shadow: 0 0 10px #ed17fa;
         }
         .bonuses-text {
             position: absolute;
@@ -178,7 +207,7 @@
             font-size: 20px;
             color: white;
         }
-        @media (max-width: 1200px) {
+        @media (max-width: 1000px) {
             body.loaded {
                 transform: scale(0.7);
             }
@@ -191,8 +220,10 @@
     </style>    
 </head>
 <body>
-    <div class="container">
+    <div class="container-below">
         <div class="field"></div>
+    </div>
+    <div class="container-above">
         <div class="money2-panel">
             <div class="money2-text">0</div>
         </div>

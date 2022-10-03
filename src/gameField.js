@@ -72,12 +72,17 @@ export class GameField {
             dom_fieldBg.style.height = `${this.#height + 60}px`;
         }
 
-        let dom_container = document.querySelector('.container');
+        let dom_container = document.querySelector('.container-below');
         let dom_canvas = document.querySelector('canvas');
         if (dom_container && dom_canvas) {
             const bounds = dom_canvas.getBoundingClientRect();
             dom_container.style.width = `${bounds.width}px`;
-            dom_container.style.height = `${bounds.height}px`;
+        }
+
+        dom_container = document.querySelector('.container-above');
+        if (dom_container && dom_canvas) {
+            const bounds = dom_canvas.getBoundingClientRect();
+            dom_container.style.width = `${bounds.width}px`;
         }
 
         return this;
