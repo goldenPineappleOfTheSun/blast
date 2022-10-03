@@ -72,6 +72,21 @@
             font-size: 16px;
             color: white;
         }
+        .progress-fill-container {
+            position: absolute;
+            top: 32px;
+            left: 15px;
+            width: 365px;
+            height: 28px;
+        }
+        .progress-fill {
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            border-radius: 25px;
+            background: rgb(236,255,204);
+            background: linear-gradient(180deg, rgba(236,255,204,1) 0%, rgba(162,255,0,1) 23%, rgba(29,155,0,1) 68%, rgba(96,255,0,1) 100%);
+        }
         .money-panel {
             position: absolute;
             top: 20px;
@@ -229,6 +244,9 @@
         </div>
         <div class="progress-panel">
             <div class="progress-text">прогресс</div>
+            <div class="progress-fill-container">
+                <div class="progress-fill"></div>
+            </div>
         </div>
         <div class="money-panel">
             <div class="money-text">6477</div>
