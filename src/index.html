@@ -29,6 +29,23 @@
             border-image: url(img/field-bg.png) 120 round;
             background: #001e3b;
         }
+        .money2-panel {
+            position: absolute;
+            top: 20px;
+            left: 100px;
+            width: 100px;
+            height: 50px;
+            background: url(img/money2-panel.png);
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+        .money2-text {    
+            position: absolute;
+            top: 5px;
+            left: 56px;
+            color: white;
+            font-size: 20px;
+        }
         .score-container {
             position: absolute;
             display: flex;
@@ -112,12 +129,14 @@
             font-size: 20px;
             color: white;
         }
-
     </style>    
 </head>
 <body>
     <div class="container">
         <div class="field"></div>
+        <div class="money2-panel">
+            <div class="money2-text">0</div>
+        </div>
         <div class="score-container">
             <div class="moves">
                 <div class="moves-text">12</div>
