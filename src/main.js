@@ -8,6 +8,7 @@ import { GemsState } from './gemsState.js';
 import { AnimationsState } from './animationsState.js';
 import { init as initCurtain } from './curtain.js';
 import { init as initParticles, animateParticles } from './particles.js';
+import { init as initRules } from './scores.js'
 
 const cellsCount = {x:8, y:8};
 const gameFieldPadding = 50;
@@ -36,7 +37,6 @@ function init() {
         .handlerForPutStaticGem(state.put.bind(state))
         .handlerForGetFieldSize(() => state.size);
     gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
-        .setRules(5)
         .setStateHolders(state, animationState)
         .setDimensions(
             cellsCount.x, 
@@ -54,6 +54,7 @@ function init() {
 
     app.stage.addChild(initCurtain('shuffle-anouncer', app.screen.width, app.screen.height));
     app.stage.addChild(initParticles());
+    initRules(5, 25, 100);
 
     let dom_body = document.querySelector('body');
     if (dom_body) {

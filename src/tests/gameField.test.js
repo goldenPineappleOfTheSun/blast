@@ -2,6 +2,7 @@ import { GameField } from '../gameField.js';
 import { GemsState } from '../gemsState.js';
 import { AnimationsState } from '../animationsState.js';
 import { gemColors } from '../GemTypes.js';
+import { init as initRules } from '../scores.js';
 
 
 const gemState = new GemsState(1, 1);
@@ -34,20 +35,20 @@ function createExampleGemState() {
 function createExampleField() {
     return new GameField(0, 0)
         .setStateHolders(createExampleGemState(), animationsState)
-        .setDimensions(4, 4, 100, 100)
-        .setRules(2);
+        .setDimensions(4, 4, 100, 100);
+    initRules(2, 1, 1);
 }
 
 const exampleField1 = createExampleField();
 
 
 test('throws error if "start" called before dimensions set', () => {
-    const field = new GameField(0, 0).setStateHolders(gemState, animationsState).setRules(2);
+    const field = new GameField(0, 0).setStateHolders(gemState, animationsState);
     expect(field.start).toThrow();
 });
 
 test('throws error if "start" called before state holders set', () => {
-    const field = new GameField(0, 0).setDimensions(5, 5, 100, 100).setRules(2);
+    const field = new GameField(0, 0).setDimensions(5, 5, 100, 100);
     expect(field.start).toThrow();
 });
 
@@ -60,7 +61,6 @@ test('throws error if "start" called two times', () => {
     const field = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
         .setDimensions(2, 2, 2, 2)
-        .setRules(2)
         .start();
     expect(field.start).toThrow();
 });
@@ -68,112 +68,106 @@ test('throws error if "start" called two times', () => {
 test('calculates width correctly', () => {
     const field1 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(5, 5, 100, 100)
-        .setRules(2);
+        .setDimensions(5, 5, 100, 100);
     expect(field1.width).toBe(100);
 
     const field2 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(5, 1, 100, 100)
-        .setRules(2);
+        .setDimensions(5, 1, 100, 100);
     expect(field2.width).toBe(100);
 
     const field3 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(1, 5, 100, 100)
-        .setRules(2);
+        .setDimensions(1, 5, 100, 100);
     expect(field3.width).toBe(20);
 });
 
 test('calculates height correctly', () => {
     const field1 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(3, 3, 100, 100)
-        .setRules(2);
+        .setDimensions(3, 3, 100, 100);
     expect(field1.height).toBe(100);
 
     const field2 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(4, 1, 100, 100)
-        .setRules(2);
+        .setDimensions(4, 1, 100, 100);
     expect(field2.height).toBe(25);
 
     const field3 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(1, 4, 100, 100)
-        .setRules(2);
+        .setDimensions(1, 4, 100, 100);
     expect(field3.height).toBe(100);
 });
 
 test('calculates gem size correctly', () => {
     const field1 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(5, 5, 100, 100)
-        .setRules(2);
+        .setDimensions(5, 5, 100, 100);
     expect(field1.gemSize).toBe(20);
 
     const field2 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(2, 4, 100, 100)
-        .setRules(2);
+        .setDimensions(2, 4, 100, 100);
     expect(field2.gemSize).toBe(25);
 
     const field3 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(20, 1, 100, 100)
-        .setRules(2);
+        .setDimensions(20, 1, 100, 100);
     expect(field3.gemSize).toBe(5);
 });
 
 test('calculates gem position correctly', () => {
     const field1 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(5, 5, 100, 100)
-        .setRules(2);
+        .setDimensions(5, 5, 100, 100);
     expect(field1.position.x).toBe(0);
 
     const field2 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(2, 4, 100, 100)
-        .setRules(2);
+        .setDimensions(2, 4, 100, 100);
     expect(field2.position.x).toBe(25);
 
     const field3 = new GameField(0, 0)
         .setStateHolders(gemState, animationsState)
-        .setDimensions(20, 1, 100, 100)
-        .setRules(2);
+        .setDimensions(20, 1, 100, 100);
     expect(field3.position.x).toBe(0);
 });
 
 test('checkIfPackable with different packSize rule', () => {
-    const field1 = exampleField1.setRules(1);
+    const field1 = exampleField1;
+    initRules(1, 1, 1);
     expect(field1.checkIfPackable(0, 0)).toBeTruthy();
     expect(field1.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field2 = exampleField1.setRules(2);
+    const field2 = exampleField1;
+    initRules(2, 1, 1);
     expect(field2.checkIfPackable(0, 0)).toBe(false);
     expect(field2.checkIfPackable(1, 0)).toBeTruthy();
     expect(field2.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field3 = exampleField1.setRules(3);
+    const field3 = exampleField1;
+    initRules(3, 1, 1);
     expect(field3.checkIfPackable(0, 0)).toBe(false);
     expect(field3.checkIfPackable(1, 0)).toBe(false);
     expect(field3.checkIfPackable(3, 0)).toBeTruthy();
     expect(field3.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field4 = exampleField1.setRules(4);
+    const field4 = exampleField1;
+    initRules(4, 1, 1);
     expect(field4.checkIfPackable(0, 0)).toBe(false);
     expect(field4.checkIfPackable(3, 0)).toBe(false);
     expect(field4.checkIfPackable(1, 1)).toBeTruthy();
     expect(field4.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field5 = exampleField1.setRules(5);
+    const field5 = exampleField1;
+    initRules(5, 1, 1);
     expect(field5.checkIfPackable(0, 0)).toBe(false);
     expect(field5.checkIfPackable(3, 0)).toBe(false);
     expect(field5.checkIfPackable(1, 1)).toBe(false);
     expect(field5.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field6 = exampleField1.setRules(6);
+    const field6 = exampleField1;    
+    initRules(6, 1, 1);
     expect(field6.checkIfPackable(0, 0)).toBe(false);
     expect(field6.checkIfPackable(3, 0)).toBe(false);
     expect(field6.checkIfPackable(1, 1)).toBe(false);
@@ -182,7 +176,8 @@ test('checkIfPackable with different packSize rule', () => {
 
 test('click must destroy packable gems', () => {
     const state1 = createExampleGemState();
-    const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState).start();
+    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
+    initRules(3, 1, 1);
     field1.click(0, 0);
     expect(state1.get(0, 0)).toBe(gemColors.blue);
 
@@ -191,7 +186,8 @@ test('click must destroy packable gems', () => {
     expect(state1.get(0, 1)).toBe(null);
 
     const state2 = createExampleGemState();
-    const field2 = createExampleField().setRules(5).setStateHolders(state2, animationsState).start();
+    const field2 = createExampleField().setStateHolders(state2, animationsState).start();
+    initRules(5, 1, 1);
     field2.click(0, 0);
     expect(state2.get(0, 0)).toBe(gemColors.blue);
 
@@ -202,7 +198,8 @@ test('click must destroy packable gems', () => {
 
 test('click must make upper gems falling', () => {
     const state1 = createExampleGemState();
-    const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState).start();
+    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
+    initRules(3, 1, 1);
     field1.click(0, 0);
     expect(state1.get(0, 0)).toBe(gemColors.blue);
 
@@ -217,14 +214,16 @@ test('click must make upper gems falling', () => {
 test('click create new blocks above', () => {
     const state1 = createExampleGemState();
     const astate1 = createExampleAnimationState();
-    const field1 = createExampleField().setRules(3).setStateHolders(state1, astate1).start();
+    const field1 = createExampleField().setStateHolders(state1, astate1).start();
+    initRules(3, 1, 1);
     field1.click(1, 1);
     expect(astate1.count()).toBe(6);
 });
 
 test('clicks dont do anything if start never called', () => {
     const state1 = createExampleGemState();
-    const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState);
+    const field1 = createExampleField().setStateHolders(state1, animationsState);
+    initRules(3, 1, 1);
     field1.click(1, 1);
     expect(state1.get(1, 1)).toBe(gemColors.yellow);
     expect(state1.get(0, 1)).toBe(gemColors.yellow);
@@ -232,7 +231,8 @@ test('clicks dont do anything if start never called', () => {
 
 test('clicks dont do anything when gamefield on a wrong stage', () => {
     const state1 = createExampleGemState();
-    const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState).start();
+    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
+    initRules(3, 1, 1);
     field1.click(1, 1);
     expect(state1.get(1, 1)).toBe(null);
     expect(state1.get(0, 1)).toBe(null);

@@ -6,6 +6,7 @@ import { Bubble } from './bubble.js';
 import { dice, sleep } from './utils.js';
 import { showCurtain, hideCurtain } from './curtain.js';
 import { createParticle } from './particles.js';
+import { getMinPackSize as packSize, move as minusMove } from './scores.js';
 
 const stages = {
     notStarted: 0,
@@ -15,7 +16,7 @@ const stages = {
 }
 
 export class GameField {
-    #sprite; #x; #y; #width; #height; #gemSize; #rule_minPackSize; #maskSprite; #stage; #size;
+    #sprite; #x; #y; #width; #height; #gemSize; #maskSprite; #stage; #size;
 
     /* спрайты камней. не несут логики - только отображение. каждый гем отвечает за отображение одной ячейки 
     (и не падает вниз вместе с камнями, ничего такого, просто следит за одной ячейкой и отрисовывает её состояние) */
@@ -98,14 +99,6 @@ export class GameField {
         return this;
     }
 
-    /*
-    minPackSize - сколько камней должно быть соседями, чтобы их можно было одновременно собрать
-    */
-    setRules(minPackSize) {
-        this.#rule_minPackSize = minPackSize;
-        return this;
-    }
-
     get gemSize() {
         return this.#gemSize;
     }
@@ -134,9 +127,6 @@ export class GameField {
         }
         if (!this.#fieldState || !this.#animationState) {
             throw new Error('Перед запуском надо вызвать setStateHolders'); 
-        }
-        if (!this.#rule_minPackSize) {
-            throw new Error('Перед запуском надо вызвать setRules'); 
         }
         this.#stage = stages.clickable;
 
@@ -188,6 +178,7 @@ export class GameField {
 
         this.#stage = stages.animation;
         this.cancelHighlighting();
+        minusMove();
 
         for (let f of check) {
             this.#fieldState.clear(f.x, f.y);
@@ -335,7 +326,7 @@ export class GameField {
         }
         check(x, y);
 
-        return found.length >= this.#rule_minPackSize ? found : false;        
+        return found.length >= packSize() ? found : false;        
     }
 
     animate(delta) {
