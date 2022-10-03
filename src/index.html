@@ -226,6 +226,17 @@
             font-size: 20px;
             color: white;
         }
+        .bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            filter: blur(10px) brightness(0.5);
+            background: url(img/under-the-sea-bg.jpg);
+            background-size: 100%;
+            z-index: -10;
+        }
         @media (max-width: 1000px) {
             body.loaded {
                 transform: scale(0.7);
@@ -272,5 +283,7 @@
             <div class="bonus"></div>
         </div>
     </div>
+
+    <div class="bg"></div>
 </body>
 </html>
