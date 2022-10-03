@@ -9,6 +9,7 @@ export class Bubble {
         let bounds = this.#sprite.getBounds();
         this.#sprite.x = x;
         this.#sprite.y = y;
+        this.#sprite.alpha = 0.5;
         this.#sprite.anchor.set(0.5);
         let scale = 0.5 + Math.random() * 0.5;
         this.#sprite.scale = {x: size / bounds.width * scale, y: size / bounds.width * scale};

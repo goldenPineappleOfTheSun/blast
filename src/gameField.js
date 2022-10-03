@@ -3,10 +3,12 @@ import { Cell } from './cell.js';
 import { FallingGem } from './fallingGem.js';
 import { SwappingGem } from './swappingGem.js';
 import { Bubble } from './bubble.js';
+import { ScoreFloating } from './scoreFloating.js';
 import { dice, sleep } from './utils.js';
 import { showCurtain, hideCurtain } from './curtain.js';
 import { createParticle } from './particles.js';
 import { getMinPackSize as packSize, move as minusMove, addScore } from './scores.js';
+import { readGemColor } from './gemTypes.js';
 
 const stages = {
     notStarted: 0,
@@ -171,10 +173,12 @@ export class GameField {
             return; 
         }
 
-        const check = this.checkIfPackable(x, y);
+        let check = this.checkIfPackable(x, y);
         if (!check) {
             return;
         }
+
+        check = check.map(o => {return {color: this.#fieldState.get(o.x, o.y), ...o}});
 
         this.#stage = stages.animation;
         this.cancelHighlighting();
@@ -219,9 +223,15 @@ export class GameField {
             }
         }
 
-        for (let x in check) {
-            await sleep(100 - x * 3);
-            addScore(+x);
+        let index = 1;
+        for (let c of check) {
+            await sleep(100 - index * 3);
+            createParticle(new ScoreFloating(
+                this.#x + c.x * this.#gemSize + this.#gemSize / 2,
+                this.#y + c.y * this.#gemSize + this.#gemSize / 2, 
+                this.#gemSize/2, index, readGemColor(c.color).tint));
+            addScore(+index);
+            index++;
         }
     }
 

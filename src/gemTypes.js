@@ -11,18 +11,23 @@ export const gemColors = {
 const gemColorInfo = {
     [gemColors.blue]: {
         get texture() { return getTexture('blue')},
+        tint: 0x04bcfd
     },
     [gemColors.purple]: {
         get texture() { return  getTexture('purple')},
+        tint: 0xaf59a0
     },
     [gemColors.red]: {
         get texture() { return  getTexture('red')},
+        tint: 0xff4666
     },
     [gemColors.yellow]: {
         get texture() { return  getTexture('yellow')},
+        tint: 0xdcb348
     },
     [gemColors.green]: {
         get texture() { return  getTexture('green')},
+        tint: 0xa5df70
     }
 }
 
