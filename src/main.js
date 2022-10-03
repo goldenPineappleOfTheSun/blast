@@ -50,6 +50,7 @@ function init() {
     app.stage.addChild(scoreProgressPanel.getSprite());
     app.stage.addChild(scoreBonusesPanel.getSprite());
     app.stage.addChild(gameField.getSprite());
+    gameField.getSprite().addChild(animationState.getSprite());
 
     app.stage.addChild(initCurtain('shuffle-anouncer', app.screen.width, app.screen.height));
     app.stage.addChild(initParticles());

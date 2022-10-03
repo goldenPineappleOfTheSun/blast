@@ -145,10 +145,14 @@ export class GameField {
                     this.#fieldState, this.#animationState)
                     .handlerForGetCurrentState(() => this.#fieldState.get(i, j))
                     .handlerForGetCurrentAnimationState(() => this.#animationState.get(i, j))
-                    .handlerForClick(() => this.click(i, j));
+                    .handlerForClick(() => this.click(i, j))
+                    .handlerForMouseover(() => this.mouseover(i, j));
                 this.#sprite.addChild(this.#gems[i][j].getSprite());
             }
         }
+
+        this.#sprite.interactive = true;
+        this.#sprite.on('mouseout', () => this.cancelHighlighting());
 
         this.shuffleIfNeeded();
 
@@ -170,6 +174,7 @@ export class GameField {
         }
 
         this.#stage = stages.animation;
+        this.cancelHighlighting();
 
         for (let f of check) {
             this.#fieldState.clear(f.x, f.y);
@@ -209,6 +214,21 @@ export class GameField {
                 }
             }
         }
+    }
+
+    async mouseover(x, y) {
+        const check = this.checkIfPackable(x, y);
+        if (!check) {
+            this.#animationState.setHighlightedCells([], 0);
+            return;
+        }
+        this.#animationState.setHighlightedCells(
+            check.map(o => {return {x:o.x*this.#gemSize + this.#gemSize*0.05, y:o.y*this.#gemSize+this.#gemSize*0.05}}), 
+            this.#gemSize*0.9);
+    }
+
+    async cancelHighlighting() {
+        this.#animationState.setHighlightedCells([], 0);
     }
 
     /*

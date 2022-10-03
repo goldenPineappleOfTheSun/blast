@@ -2,7 +2,7 @@ import { Container, Graphics, Sprite } from 'pixi.js'
 import { readGemColor } from './gemTypes.js'
 
 export class Cell {
-    #sprite; #gemSprite; #size; #position; #x; #y; #getstate; #getanimationstate; #onclick;
+    #sprite; #gemSprite; #size; #position; #x; #y; #getstate; #getanimationstate; #onclick; #onmouseover;
 
     /*
     x, y - позиция спрайта в пикселях
@@ -19,6 +19,7 @@ export class Cell {
         this.#sprite.interactive = true;
         /* создаётся много функций, но с другой стороны cell-объекты никогда не удаляются и не пересоздаются, так что ок */
         this.#sprite.on('mouseup', this.click.bind(this));
+        this.#sprite.on('mouseover', this.mouseover.bind(this));
         this.#size = size;
 
         /* #gemSprite - картинка, которую надо нарисовать */
@@ -52,8 +53,17 @@ export class Cell {
         return this;
     }
 
+    handlerForMouseover(func) {
+        this.#onmouseover = func;
+        return this;
+    }
+
     click() {
         this.#onclick();
+    }
+
+    mouseover() {
+        this.#onmouseover();
     }
 
     animate(delta) {

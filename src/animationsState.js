@@ -1,11 +1,18 @@
+import { Graphics, Container, BLEND_MODES } from 'pixi.js';
 import { FallingGem } from './fallingGem.js';
 import { SwappingGem } from './swappingGem.js';
 
 export class AnimationsState {
-    #field; #getstate; #putgem; #getsize; #animationended;
+    #sprite; #field; #getstate; #putgem; #getsize; #animationended; #highlightSprites;
 
     constructor() {
+        this.#sprite = new Container();
         this.#field = [];
+        this.#highlightSprites = [];
+    }
+
+    getSprite() {
+        return this.#sprite;
     }
 
     count() {
@@ -43,6 +50,31 @@ export class AnimationsState {
             throw new Error("в AnimationsState можно ложить только объекты разрешенных типов");
         }
         this.#field.push(gem);
+    }
+
+    /* указать, какие клетки необходимо подсветить. если [], то нет подсветки */
+    setHighlightedCells(arr, cellSize) {
+        let index = 0;
+        if (!arr || arr.length > 0) {
+            for (index in arr) {
+                if (this.#highlightSprites.length-1 < index) {
+                    this.#highlightSprites[index] = new Graphics();
+                    this.#highlightSprites[index].beginFill(0xffffff);
+                    this.#highlightSprites[index].drawRoundedRect(0, 0, cellSize, cellSize, 5);
+                    this.#highlightSprites[index].endFill();
+                    this.#highlightSprites[index].alpha = 0.3;
+                    this.#highlightSprites[index].blendMode = BLEND_MODES.SCREEN;
+                    this.#sprite.addChild(this.#highlightSprites[index]);
+                }
+                this.#highlightSprites[index].x = arr[index].x;
+                this.#highlightSprites[index].y = arr[index].y;
+                this.#highlightSprites[index].scale = {x:1, y:1}
+            }
+            index++;
+        }
+        for (index=index; index < this.#highlightSprites.length; index++) {
+            this.#highlightSprites[index].scale = {x:0, y:0}
+        }
     }
 
     /* вызывается в каждом кадре */

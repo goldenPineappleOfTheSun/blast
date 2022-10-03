@@ -9,7 +9,6 @@ export function init() {
 
 export function createParticle(particle) {
     container.addChild(particle.getSprite());
-    console.log(container)
     particles.push(particle);
 }
 
