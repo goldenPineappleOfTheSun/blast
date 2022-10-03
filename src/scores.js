@@ -57,7 +57,9 @@ function updateMoves(n) {
 
 function updateScore(n) {
     const dom_score = document.querySelector('.score-text-2');
+    const dom_progress = document.querySelector('.progress-fill');
     if (dom_score) {
         dom_score.innerHTML = n;
+        dom_progress.style.width = `${(score / target) * 100}%`;
     }
 }
