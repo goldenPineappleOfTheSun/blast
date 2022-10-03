@@ -11,22 +11,97 @@
         }
         body {
             font-family: marvin;
+            margin: 0;
         }
         canvas {
             z-index: 1;
         }
-        .field-bg {
+        .container {
+            position: absolute;
+            z-index: -1;
+        }
+        .field {
             position: absolute;
             box-sizing: border-box;
             border: 30px solid transparent;
             border-radius: 30px;
             border-image: url(img/field-bg.png) 120 round;
             background: #001e3b;
-            z-index: -1;
+        }
+        .score-container {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            right: 100px;
+            top: 150px;
+            width: 250px;
+            height: 260px;
+            box-sizing: border-box;
+            box-sizing: border-box;
+            border: 30px solid transparent;
+            border-image: url(img/score-bg.png) 120 round;
+        }
+        .score-container:after {
+            content: '';
+            background: #20549a;
+            position: absolute;
+            left: -3%;
+            top: -3%;
+            width: 106%;
+            height: 106%;
+        }
+        .moves {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 150px;
+            top: -20px;
+            font-size: 50px;
+            color: white;
+            background: url(img/moves-panel.png);
+            background-size: 100%;
+            z-index: 1;
+        }
+        .score {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 150px;
+            height: 60px;
+            bottom: 0px;
+            font-size: 50px;
+            color: white;
+            background: url(img/score-panel.png);
+            background-size: 100%;
+            background-repeat: no-repeat;
+            z-index: 1;
+        }
+        .score-text-1 {
+            font-size: 15px;
+            line-height: 17px;
+        }
+        .score-text-2 {
+            font-size: 25px;
+            line-height: 27px;
         }
     </style>    
 </head>
 <body>
-    <div class="field-bg"></div>
+    <div class="container">
+        <div class="field"></div>
+        <div class="score-container">
+            <div class="moves">
+                <div class="moves-text">12</div>
+            </div>
+            <div class="score">
+                <div class="score-text-1">очки:</div>
+                <div class="score-text-2">124</div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

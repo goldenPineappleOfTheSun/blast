@@ -16,7 +16,7 @@ export class Bubble {
         this.#tint = tint;
         this.#direction = Math.random() * Math.PI * 2;
         this.#steeringSpeed = -0.01 + Math.random() * 0.02;
-        this.#speed = 4 + Math.random() * 3;
+        this.#speed = 5 + Math.random() * 5;
         this.#elevationSpeed = 0;
         this.#lifetime = Math.random() < 0.1 ? 80 + Math.random() * 60 : 20 + Math.random() * 60;
         this.#destroyed = false;
@@ -40,7 +40,7 @@ export class Bubble {
         this.#sprite.y -= this.#elevationSpeed;
         this.#direction += this.#steeringSpeed;
         this.#lifetime -= delta;
-        this.#speed *= 0.95;
+        this.#speed *= 0.9;
         this.#elevationSpeed += 0.02;
         if (this.#lifetime < 0) {
             this.destroy();

@@ -64,11 +64,11 @@ export class GameField {
         this.#x = this.#x + (maxWidth - this.#width) / 2;
         this.#y = this.#y;
 
-        let dom_fieldBg = document.querySelector('.field-bg');
+        let dom_fieldBg = document.querySelector('.field');
         if (dom_fieldBg) {
-            dom_fieldBg.style.left = `${this.#x - 20}px`;
-            dom_fieldBg.style.top = `${this.#y - 20}px`;
-            dom_fieldBg.style.width = `${this.#width + 55}px`;
+            dom_fieldBg.style.left = `${this.#x - 30}px`;
+            dom_fieldBg.style.top = `${this.#y - 30}px`;
+            dom_fieldBg.style.width = `${this.#width + 60}px`;
             dom_fieldBg.style.height = `${this.#height + 60}px`;
         }
 
