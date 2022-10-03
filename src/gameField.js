@@ -2,7 +2,8 @@ import { Container, Graphics } from 'pixi.js'
 import { Cell } from './cell.js';
 import { FallingGem } from './fallingGem.js';
 import { SwappingGem } from './swappingGem.js';
-import { dice } from './utils.js';
+import { dice, sleep } from './utils.js';
+import { showCurtain, hideCurtain } from './curtain.js';
 
 const stages = {
     notStarted: 0,
@@ -144,6 +145,8 @@ export class GameField {
             }
         }
 
+        this.shuffleIfNeeded();
+
         return this;
     }
 
@@ -216,7 +219,7 @@ export class GameField {
     /*
     проверяет, есть ли на поле возможные ходы, если нет, то перемешивает камни
     */
-    shuffleIfNeeded() {
+    async shuffleIfNeeded() {
         for (let i=0; i<this.#size.x; i++) {
             for (let j=0; j<this.#size.y; j++) {
                 if (this.checkIfPackable(i, j)) {
@@ -224,6 +227,12 @@ export class GameField {
                 }
             }
         }
+
+        await sleep(300);
+        showCurtain('shuffle-anouncer', 'Нет ходов...\nПеремешиваем!');
+        await sleep(1000);
+        hideCurtain('shuffle-anouncer');
+        await sleep(500);
 
         let occupied = Array(this.#size.x).fill().map(()=>Array(this.#size.y).fill(null));
 

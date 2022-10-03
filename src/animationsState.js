@@ -47,6 +47,10 @@ export class AnimationsState {
 
     /* вызывается в каждом кадре */
     animate(delta = 1) {
+        if (this.#field.length === 0) {
+            return;
+        }
+
         /* обновляем */
         for (let gem of this.#field) {
             gem.animate(delta);

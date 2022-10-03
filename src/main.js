@@ -6,6 +6,7 @@ import { ScoreBonusesPanel } from './scoreBonusesPanel.js';
 import { GameField } from './gameField.js';
 import { GemsState } from './gemsState.js';
 import { AnimationsState } from './animationsState.js';
+import { init as initCurtain } from './curtain.js';
 
 const cellsCount = {x:8, y:8};
 const gameFieldPadding = 50;
@@ -29,7 +30,7 @@ function init() {
         .handlerForPutStaticGem(state.put.bind(state))
         .handlerForGetFieldSize(() => state.size);
     gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
-        .setRules(9)
+        .setRules(12)
         .setStateHolders(state, animationState)
         .setDimensions(
             cellsCount.x, 
@@ -43,6 +44,8 @@ function init() {
     app.stage.addChild(scoreProgressPanel.getSprite());
     app.stage.addChild(scoreBonusesPanel.getSprite());
     app.stage.addChild(gameField.getSprite());
+
+    app.stage.addChild(initCurtain('shuffle-anouncer', app.screen.width, app.screen.height));
     
     started = true;
 }
