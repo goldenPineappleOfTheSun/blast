@@ -10,9 +10,13 @@
           src: url('fonts/marvin.otf') format('opentype');
         }
         body {
-            font-family: marvin;
+            display: flex;
+            justify-content: center;
             margin: 0;
+            font-family: marvin;
             background: #000;
+            transform: none;
+            transform-origin: top;
         }
         canvas {
             z-index: 1;
@@ -173,6 +177,16 @@
             top: 15px;
             font-size: 20px;
             color: white;
+        }
+        @media (max-width: 1200px) {
+            body.loaded {
+                transform: scale(0.7);
+            }
+        }
+        @media (max-width: 600px) {
+            body.loaded {
+                transform: scale(0.4);
+            }
         }
     </style>    
 </head>

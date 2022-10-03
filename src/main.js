@@ -54,6 +54,11 @@ function init() {
 
     app.stage.addChild(initCurtain('shuffle-anouncer', app.screen.width, app.screen.height));
     app.stage.addChild(initParticles());
+
+    let dom_body = document.querySelector('body');
+    if (dom_body) {
+        dom_body.classList.add('loaded');
+    }
     
     started = true;
 }
