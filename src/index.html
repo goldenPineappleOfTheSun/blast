@@ -12,6 +12,7 @@
         body {
             font-family: marvin;
             margin: 0;
+            background: #000;
         }
         canvas {
             z-index: 1;
@@ -88,6 +89,30 @@
             font-size: 25px;
             line-height: 27px;
         }
+        .bonuses-container {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: end;
+            right: 75px;
+            width: 300px;
+            height: 150px;
+            bottom: 130px;
+        }
+        .bonus {
+            width: 100px;
+            height: 100px;
+            background: url(img/bonus-panel.png);
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+        .bonuses-text {
+            position: absolute;
+            top: 15px;
+            font-size: 20px;
+            color: white;
+        }
+
     </style>    
 </head>
 <body>
@@ -101,6 +126,12 @@
                 <div class="score-text-1">очки:</div>
                 <div class="score-text-2">124</div>
             </div>
+        </div>
+        <div class="bonuses-container">
+            <div class="bonuses-text">бонусы:</div>
+            <div class="bonus"></div>
+            <div class="bonus"></div>
+            <div class="bonus"></div>
         </div>
     </div>
 </body>
