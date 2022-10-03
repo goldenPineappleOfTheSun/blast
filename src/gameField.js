@@ -2,8 +2,10 @@ import { Container, Graphics } from 'pixi.js'
 import { Cell } from './cell.js';
 import { FallingGem } from './fallingGem.js';
 import { SwappingGem } from './swappingGem.js';
+import { Bubble } from './bubble.js';
 import { dice, sleep } from './utils.js';
 import { showCurtain, hideCurtain } from './curtain.js';
+import { createParticle } from './particles.js';
 
 const stages = {
     notStarted: 0,
@@ -171,6 +173,12 @@ export class GameField {
 
         for (let f of check) {
             this.#fieldState.clear(f.x, f.y);
+            for (let i=0; i<3; i++) {
+                createParticle(new Bubble(
+                    this.#x + f.x * this.#gemSize + this.#gemSize * 0.2 + Math.random() * this.#gemSize * 0.6, 
+                    this.#y + f.y * this.#gemSize + this.#gemSize * 0.2 + Math.random() * this.#gemSize * 0.6, 
+                    this.#gemSize));
+            }
         }
 
         /* подкидываем новые блоки сверху */

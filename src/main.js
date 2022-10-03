@@ -7,6 +7,7 @@ import { GameField } from './gameField.js';
 import { GemsState } from './gemsState.js';
 import { AnimationsState } from './animationsState.js';
 import { init as initCurtain } from './curtain.js';
+import { init as initParticles, animateParticles } from './particles.js';
 
 const cellsCount = {x:8, y:8};
 const gameFieldPadding = 50;
@@ -51,6 +52,7 @@ function init() {
     app.stage.addChild(gameField.getSprite());
 
     app.stage.addChild(initCurtain('shuffle-anouncer', app.screen.width, app.screen.height));
+    app.stage.addChild(initParticles());
     
     started = true;
 }
@@ -64,4 +66,5 @@ app.ticker.add((delta) => {
 
     gameField.animate(delta);
     animationState.animate(delta);
+    animateParticles(delta);
 });

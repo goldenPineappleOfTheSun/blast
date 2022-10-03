@@ -7,6 +7,7 @@ loader.add('purple', 'img/purple.png');
 loader.add('red', 'img/red.png');
 loader.add('yellow', 'img/yellow.png');
 loader.add('green', 'img/green.png');
+loader.add('bubble', 'img/bubble.png');
 loader.load(resourcesLoaded);
 
 const font = new FontFaceObserver('marvin');
