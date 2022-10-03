@@ -10,6 +10,7 @@ export function init(_minPackSize, _moves, _target) {
     target = _target;
     updateMoves(moves);
     updateScore(0);
+    updateTarget(target)
 }
 
 export function getMinPackSize() {
@@ -61,5 +62,13 @@ function updateScore(n) {
     if (dom_score) {
         dom_score.innerHTML = n;
         dom_progress.style.width = `${(score / target) * 100}%`;
+    }
+}
+
+function updateTarget(n) {
+    const dom_score = document.querySelector('.score-text-4');
+    const dom_progress = document.querySelector('.progress-fill');
+    if (dom_score) {
+        dom_score.innerHTML = target;
     }
 }

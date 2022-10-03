@@ -54,7 +54,7 @@ function init() {
 
     app.stage.addChild(initCurtain('shuffle-anouncer', app.screen.width, app.screen.height));
     app.stage.addChild(initParticles());
-    initRules(2, 25, 1000);
+    initRules(2, 25, 1500);
 
     let dom_body = document.querySelector('body');
     if (dom_body) {

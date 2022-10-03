@@ -135,9 +135,9 @@
             display: flex;
             justify-content: center;
             right: 100px;
-            top: 150px;
+            top: 110px;
             width: 250px;
-            height: 260px;
+            height: 340px;
             box-sizing: border-box;
             box-sizing: border-box;
             border: 30px solid transparent;
@@ -166,7 +166,7 @@
             background-size: 100%;
             z-index: 1;
         }
-        .score {
+        .score, .score-target {
             position: absolute;
             display: flex;
             flex-direction: column;
@@ -174,7 +174,6 @@
             align-items: center;
             width: 150px;
             height: 60px;
-            bottom: 0px;
             font-size: 50px;
             color: white;
             background: url(img/score-panel.png);
@@ -182,11 +181,25 @@
             background-repeat: no-repeat;
             z-index: 1;
         }
+        .score {
+            bottom: 80px;
+        }
+        .score-target {
+            bottom: 0px;
+        }
         .score-text-1 {
             font-size: 15px;
             line-height: 17px;
         }
         .score-text-2 {
+            font-size: 25px;
+            line-height: 27px;
+        }
+        .score-text-3 {
+            font-size: 15px;
+            line-height: 17px;
+        }
+        .score-text-4 {
             font-size: 25px;
             line-height: 27px;
         }
@@ -198,7 +211,7 @@
             right: 75px;
             width: 300px;
             height: 150px;
-            top: 430px;
+            top: 460px;
         }
         .bonus {
             position: relative;
@@ -274,6 +287,10 @@
             <div class="score">
                 <div class="score-text-1">очки:</div>
                 <div class="score-text-2">124</div>
+            </div>
+            <div class="score-target">
+                <div class="score-text-3">цель:</div>
+                <div class="score-text-4">1000</div>
             </div>
         </div>
         <div class="bonuses-container">
