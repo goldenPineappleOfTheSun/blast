@@ -1,6 +1,6 @@
 import { getTexture } from './loader.js';
 
-export const gemTypes = {
+export const gemColors = {
     blue: Symbol('blue gem'),
     purple: Symbol('purple gem'),
     red: Symbol('red gem'),
@@ -8,24 +8,24 @@ export const gemTypes = {
     green: Symbol('green gem'),
 }
 
-const gemTypeInfo = {
-    [gemTypes.blue]: {
+const gemColorInfo = {
+    [gemColors.blue]: {
         get texture() { return getTexture('blue')},
     },
-    [gemTypes.purple]: {
+    [gemColors.purple]: {
         get texture() { return  getTexture('purple')},
     },
-    [gemTypes.red]: {
+    [gemColors.red]: {
         get texture() { return  getTexture('red')},
     },
-    [gemTypes.yellow]: {
+    [gemColors.yellow]: {
         get texture() { return  getTexture('yellow')},
     },
-    [gemTypes.green]: {
+    [gemColors.green]: {
         get texture() { return  getTexture('green')},
     }
 }
 
-export function readGemType(type) {
-    return gemTypeInfo[type];
+export function readGemColor(color) {
+    return gemColorInfo[color];
 }

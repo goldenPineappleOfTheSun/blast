@@ -1,7 +1,7 @@
-import { gemTypes, readGemType } from '../gemTypes.js';
+import { gemColors, readGemColor } from '../gemTypes.js';
 
-test('read gem type info', () => {
-    expect(readGemType(gemTypes.blue)).toBeTruthy();
-    expect(readGemType(gemTypes.red)).toBeTruthy();
-    expect(readGemType(gemTypes.false)).toBeUndefined();
+test('read gem color info', () => {
+    expect(readGemColor(gemColors.blue)).toBeTruthy();
+    expect(readGemColor(gemColors.red)).toBeTruthy();
+    expect(readGemColor(gemColors.false)).toBeUndefined();
 });

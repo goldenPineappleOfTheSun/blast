@@ -1,20 +1,20 @@
 export class SwappingGem {
-    #origin; #target; #time; #progress; #type; #dx; #dy;
+    #origin; #target; #time; #progress; #color; #dx; #dy;
 
-    constructor(a, b, type, time=10) {
+    constructor(a, b, color, time=10) {
         this.x = a.x;
         this.y = a.y;
         this.#origin = a;
         this.#target = b;
-        this.#type = type;
+        this.#color = color;
         this.#time = time;
         this.#progress = 0;
         this.#dx = b.x - a.x;
         this.#dy = b.y - a.y;
     }
 
-    get type() {
-        return this.#type;
+    get color() {
+        return this.#color;
     }
 
     get origin() {

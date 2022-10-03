@@ -61,7 +61,15 @@ export class GameField {
         this.#height = this.#gemSize * h;
         this.#x = this.#x + (maxWidth - this.#width) / 2;
         this.#y = this.#y;
-        dom_setupFieldBg(this.#x - 20, this.#y - 20, this.#width + 60, this.#height + 60);
+
+        let dom_fieldBg = document.querySelector('.field-bg');
+        if (dom_fieldBg) {
+            dom_fieldBg.style.left = `${this.#x - 20}px`;
+            dom_fieldBg.style.top = `${this.#y - 20}px`;
+            dom_fieldBg.style.width = `${this.#width + 55}px`;
+            dom_fieldBg.style.height = `${this.#height + 60}px`;
+        }
+
         return this;
     }
 
@@ -149,7 +157,7 @@ export class GameField {
         return this.#sprite;
     }
 
-    click(x, y) {
+    async click(x, y) {
         if (this.#stage !== stages.clickable) {
             return; 
         }
@@ -205,8 +213,8 @@ export class GameField {
             return;
         }
         this.#stage = stages.swapping;
-        this.#animationState.put(new SwappingGem(a, b, type || this.#fieldState.get(a.x, a.y), time));
-        this.#animationState.put(new SwappingGem(b, a, type || this.#fieldState.get(b.x, b.y), time));
+        this.#animationState.put(new SwappingGem(a, b, this.#fieldState.get(a.x, a.y)));
+        this.#animationState.put(new SwappingGem(b, a, this.#fieldState.get(b.x, b.y)));
         this.#fieldState.clear(a.x, a.y);
         this.#fieldState.clear(b.x, b.y);
     }
@@ -239,7 +247,7 @@ export class GameField {
                     x = dice(this.#size.x);
                     y = dice(this.#size.y);
                 }
-                occupied[x][y] = {x:i, y:j, type: this.#fieldState.get(i, j)};
+                occupied[x][y] = {x:i, y:j, color: this.#fieldState.get(i, j)};
             }
         }
 

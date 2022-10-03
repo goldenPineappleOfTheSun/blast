@@ -1,45 +1,45 @@
-import { gemTypes } from './gemTypes.js';
+import { gemColors } from './gemTypes.js';
 import { randomElement } from './utils.js';
 
-const defaultGemTypes = [gemTypes.blue, gemTypes.red, gemTypes.green];
+const defaultGemColors = [gemColors.blue, gemColors.red, gemColors.green];
 
 /*
 текущее состояние поля без учёта анимаций
 если клетка = null, то она либо пустая либо, например, пока анимирована
 */
 export class GemsState {
-    #field; #size; #possibleTypes;
+    #field; #size; #possibleColors;
 
     /*
     w - количество ячеек
     h - количество ячеек
-    possibleTypes - список допустимых типов камней. Используется только рандом-генераторами, 
+    possibleColors - список допустимых типов камней. Используется только рандом-генераторами, 
         т.к. в put кто-то может захотеть ложить даже те камни, которые сами бы никогда не сгенерировались 
         (супертайлы, например)
     */
-    constructor(w, h, possibleTypes = defaultGemTypes) {
+    constructor(w, h, possibleColors = defaultGemColors) {
         this.#field = Array(w).fill().map(()=>Array(h).fill(null));
         this.#size = {x: w, y: h};
-        this.#possibleTypes = possibleTypes;
+        this.#possibleColors = possibleColors;
     }
 
     get size() {
         return this.#size;
     }
 
-    get possibleTypes() {
-        return this.#possibleTypes;
+    get possibleColors() {
+        return this.#possibleColors;
     }
 
     /*
     сообщить тип камня, который должен лежать в координатах x y
-    type - берётся из перечисления gemTypes
+    color - берётся из перечисления gemTypes.js
     */
-    put(x, y, type) {
+    put(x, y, color) {
         if (x < 0 || y < 0 || x >= this.#field.length || y >= this.#field[0].length) {
             throw new Error('Нельзя положить камень за пределы поля');
         }
-        this.#field[x][y] = type;
+        this.#field[x][y] = color;
         return this;
     }
 
@@ -70,7 +70,7 @@ export class GemsState {
     возвращает случайный камень из возможных
     */
     chooseRandomColor() {
-        return randomElement(this.#possibleTypes);
+        return randomElement(this.#possibleColors);
     }
 
     /*

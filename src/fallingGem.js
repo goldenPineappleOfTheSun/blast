@@ -1,10 +1,10 @@
 export class FallingGem {
-    #type; #maxvelocity; #acceleration;
+    #color; #maxvelocity; #acceleration;
 
-    constructor(x, y, type, initAccelerate = 0) {
+    constructor(x, y, color, initAccelerate = 0) {
         this.x = x;
         this.y = y;
-        this.#type = type;
+        this.#color = color;
         this.#acceleration = 0.006;
         this.#maxvelocity = 0.3;
         this.velocity = initAccelerate;
@@ -12,8 +12,8 @@ export class FallingGem {
         this.rotation = 0;
     }
 
-    get type() {
-        return this.#type;
+    get color() {
+        return this.#color;
     }
 
     animate(delta = 1) {

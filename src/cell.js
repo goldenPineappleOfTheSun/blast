@@ -1,5 +1,5 @@
 import { Container, Graphics, Sprite } from 'pixi.js'
-import { readGemType } from './gemTypes.js'
+import { readGemColor } from './gemTypes.js'
 
 export class Cell {
     #sprite; #gemSprite; #size; #position; #x; #y; #getstate; #getanimationstate; #onclick;
@@ -77,14 +77,14 @@ export class Cell {
             /* в клетке есть падающий или анимированный камень */
             if (astate.animation === 'falling') {
                 this.#gemSprite.alpha = 1;
-                this.#gemSprite.texture = readGemType(astate.type).texture;
+                this.#gemSprite.texture = readGemColor(astate.color).texture;
                 this.#gemSprite.y = astate.offset * this.#size;
                 this.#gemSprite.rotation = astate.rotation;
                 return;
             }
             if (astate.animation === 'swapping') {
                 this.#gemSprite.alpha = 1;
-                this.#gemSprite.texture = readGemType(astate.type).texture;
+                this.#gemSprite.texture = readGemColor(astate.color).texture;
                 this.#gemSprite.x = astate.offset.x * this.#size;
                 this.#gemSprite.y = astate.offset.y * this.#size;
                 return;
@@ -97,7 +97,7 @@ export class Cell {
             this.#gemSprite.y = 0;
             this.#gemSprite.x = 0;
             this.#gemSprite.rotation = 0;
-            this.#gemSprite.texture = readGemType(state).texture;
+            this.#gemSprite.texture = readGemColor(state).texture;
         }
     }
 }

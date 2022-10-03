@@ -35,7 +35,7 @@ function init() {
         .handlerForPutStaticGem(state.put.bind(state))
         .handlerForGetFieldSize(() => state.size);
     gameField = new GameField(gameFieldPadding, progressPanelHeight + gameFieldPadding)
-        .setRules(12)
+        .setRules(5)
         .setStateHolders(state, animationState)
         .setDimensions(
             cellsCount.x, 

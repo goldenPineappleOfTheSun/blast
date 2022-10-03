@@ -38,8 +38,8 @@ export class AnimationsState {
 
     /* добавить ещё один камень */
     put(gem) {
-        const allowedtypes = [FallingGem, SwappingGem];
-        if (!allowedtypes.some(o => gem instanceof o)) {
+        const allowedcolors = [FallingGem, SwappingGem];
+        if (!allowedcolors.some(o => gem instanceof o)) {
             throw new Error("в AnimationsState можно ложить только объекты разрешенных типов");
         }
         this.#field.push(gem);
@@ -64,14 +64,14 @@ export class AnimationsState {
                 let x = a.x;
                 let y = (a.y + 1) ^ 0;
                 if (this.#getstate(x, y) || this.#getsize().y === y) {
-                    this.#putgem(x, y - 1, a.type);
+                    this.#putgem(x, y - 1, a.color);
                     elementsToDestroy.push(a);
                 }
                 continue;
             }
             if (a instanceof SwappingGem) {
                 if (a.progress > 1) {
-                    this.#putgem(a.target.x, a.target.y, a.type);
+                    this.#putgem(a.target.x, a.target.y, a.color);
                     elementsToDestroy.push(a);
                 }
                 continue;
@@ -138,10 +138,7 @@ export class AnimationsState {
     узнать состояние клетки в указанных координатах
     возвращаемое значение имеет формат:
     {
-        cell: {
-            type: тип(цвет) камня
-            offset: насколько вверх он смещён (в клетках, т.е. 0.5 это пол-высоты камня)
-        } или null если пусто
+        
     }
     */
     get(x, y) {
@@ -151,14 +148,14 @@ export class AnimationsState {
                 if (gem instanceof FallingGem) {
                     cell = {
                         animation: 'falling',
-                        type: gem.type,
+                        color: gem.color,
                         offset: gem.y - y,
                         rotation: gem.rotation,
                     }
                 } else if (gem instanceof SwappingGem) {
                     cell = {
                         animation: 'swapping',
-                        type: gem.type,
+                        color: gem.color,
                         offset: gem.offset,
                     }
                 }

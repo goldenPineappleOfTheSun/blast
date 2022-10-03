@@ -1,7 +1,7 @@
 import { GameField } from '../gameField.js';
 import { GemsState } from '../gemsState.js';
 import { AnimationsState } from '../animationsState.js';
-import { gemTypes } from '../GemTypes.js';
+import { gemColors } from '../GemTypes.js';
 
 
 const gemState = new GemsState(1, 1);
@@ -13,22 +13,22 @@ function createExampleAnimationState() {
 
 function createExampleGemState() {
     return new GemsState(4, 4)
-        .put(0, 0, gemTypes.blue)
-        .put(1, 0, gemTypes.red)
-        .put(2, 0, gemTypes.red)
-        .put(3, 0, gemTypes.green)
-        .put(0, 1, gemTypes.yellow)
-        .put(1, 1, gemTypes.yellow)
-        .put(2, 1, gemTypes.green)
-        .put(3, 1, gemTypes.green)
-        .put(0, 2, gemTypes.yellow)
-        .put(1, 2, gemTypes.yellow)
-        .put(2, 2, gemTypes.red)
-        .put(3, 2, gemTypes.blue)
-        .put(0, 3, gemTypes.blue)
-        .put(1, 3, gemTypes.blue)
-        .put(2, 3, gemTypes.blue)
-        .put(3, 3, gemTypes.blue)
+        .put(0, 0, gemColors.blue)
+        .put(1, 0, gemColors.red)
+        .put(2, 0, gemColors.red)
+        .put(3, 0, gemColors.green)
+        .put(0, 1, gemColors.yellow)
+        .put(1, 1, gemColors.yellow)
+        .put(2, 1, gemColors.green)
+        .put(3, 1, gemColors.green)
+        .put(0, 2, gemColors.yellow)
+        .put(1, 2, gemColors.yellow)
+        .put(2, 2, gemColors.red)
+        .put(3, 2, gemColors.blue)
+        .put(0, 3, gemColors.blue)
+        .put(1, 3, gemColors.blue)
+        .put(2, 3, gemColors.blue)
+        .put(3, 3, gemColors.blue)
 }
 
 function createExampleField() {
@@ -184,7 +184,7 @@ test('click must destroy packable gems', () => {
     const state1 = createExampleGemState();
     const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState).start();
     field1.click(0, 0);
-    expect(state1.get(0, 0)).toBe(gemTypes.blue);
+    expect(state1.get(0, 0)).toBe(gemColors.blue);
 
     field1.click(1, 1);
     expect(state1.get(1, 1)).toBe(null);
@@ -193,23 +193,23 @@ test('click must destroy packable gems', () => {
     const state2 = createExampleGemState();
     const field2 = createExampleField().setRules(5).setStateHolders(state2, animationsState).start();
     field2.click(0, 0);
-    expect(state2.get(0, 0)).toBe(gemTypes.blue);
+    expect(state2.get(0, 0)).toBe(gemColors.blue);
 
     field2.click(1, 1);
-    expect(state2.get(1, 1)).toBe(gemTypes.yellow);
-    expect(state2.get(0, 1)).toBe(gemTypes.yellow);
+    expect(state2.get(1, 1)).toBe(gemColors.yellow);
+    expect(state2.get(0, 1)).toBe(gemColors.yellow);
 });
 
 test('click must make upper gems falling', () => {
     const state1 = createExampleGemState();
     const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState).start();
     field1.click(0, 0);
-    expect(state1.get(0, 0)).toBe(gemTypes.blue);
+    expect(state1.get(0, 0)).toBe(gemColors.blue);
 
     field1.click(1, 1);
     expect(state1.get(0, 0)).toBe(null);
     expect(state1.get(1, 0)).toBe(null);
-    expect(state1.get(2, 0)).toBe(gemTypes.red);
+    expect(state1.get(2, 0)).toBe(gemColors.red);
     expect(state1.get(1, 1)).toBe(null);
     expect(state1.get(0, 1)).toBe(null);
 });
@@ -226,8 +226,8 @@ test('clicks dont do anything if start never called', () => {
     const state1 = createExampleGemState();
     const field1 = createExampleField().setRules(3).setStateHolders(state1, animationsState);
     field1.click(1, 1);
-    expect(state1.get(1, 1)).toBe(gemTypes.yellow);
-    expect(state1.get(0, 1)).toBe(gemTypes.yellow);
+    expect(state1.get(1, 1)).toBe(gemColors.yellow);
+    expect(state1.get(0, 1)).toBe(gemColors.yellow);
 });
 
 test('clicks dont do anything when gamefield on a wrong stage', () => {
@@ -237,6 +237,6 @@ test('clicks dont do anything when gamefield on a wrong stage', () => {
     expect(state1.get(1, 1)).toBe(null);
     expect(state1.get(0, 1)).toBe(null);
     field1.click(3, 3);
-    expect(state1.get(3, 3)).toBe(gemTypes.blue);
-    expect(state1.get(2, 3)).toBe(gemTypes.blue);
+    expect(state1.get(3, 3)).toBe(gemColors.blue);
+    expect(state1.get(2, 3)).toBe(gemColors.blue);
 });
