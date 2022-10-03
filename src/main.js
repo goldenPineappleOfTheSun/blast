@@ -8,7 +8,7 @@ import { GemsState } from './gemsState.js';
 import { AnimationsState } from './animationsState.js';
 import { init as initCurtain } from './curtain.js';
 import { init as initParticles, animateParticles } from './particles.js';
-import { init as initRules } from './scores.js'
+import { init as initRules, animate as animateScore } from './scores.js'
 
 const cellsCount = {x:8, y:8};
 const gameFieldPadding = 50;
@@ -74,4 +74,5 @@ app.ticker.add((delta) => {
     gameField.animate(delta);
     animationState.animate(delta);
     animateParticles(delta);
+    animateScore(delta);
 });

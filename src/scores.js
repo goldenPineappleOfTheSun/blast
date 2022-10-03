@@ -1,6 +1,7 @@
 let minPackSize = 2;
 let moves = 10;
 let score = 0;
+let scoreYelling = 0;
 let target = 100;
 
 export function init(_minPackSize, _moves, _target) {
@@ -35,6 +36,16 @@ export function move() {
 export function addScore(n) {
     score += n;
     updateScore(score);
+    scoreYelling = Math.min(50, scoreYelling + n * 3);
+}
+
+export function animate(delta) {
+    scoreYelling *= (1 - 0.1 * delta); 
+
+    const dom_score = document.querySelector('.score-text-2');
+    if (dom_score) {
+        dom_score.style.fontSize = `${25 + scoreYelling}px`;
+    }
 }
 
 function updateMoves(n) {

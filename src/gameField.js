@@ -220,7 +220,7 @@ export class GameField {
         }
 
         for (let x in check) {
-            await sleep(50);
+            await sleep(100 - x * 3);
             addScore(+x);
         }
     }
