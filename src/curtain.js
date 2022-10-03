@@ -4,7 +4,7 @@ const curtain = new Container();
 curtain.scale = {x:0, y:0};
 const rectangle = new Graphics();
 const announce = new Text('...', {
-    fontFamily : 'Arial',
+    fontFamily : 'marvin',
     fontSize: 60,
     fill : 0xffffff,
     align : 'center',

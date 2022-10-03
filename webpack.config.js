@@ -35,6 +35,7 @@ const config = {
             patterns: [
                 { from: "src/server.js", to: "server.js" },
                 { from: "src/img", to: "img" },
+                { from: "src/fonts", to: "fonts" },
             ],
         }),
     ]
