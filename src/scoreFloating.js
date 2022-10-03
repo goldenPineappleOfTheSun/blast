@@ -1,7 +1,7 @@
 import { Container, Text } from 'pixi.js'
 
 export class ScoreFloating {
-    #sprite; #tint; #destroyed; #xspeed; #yspeed; #disappearingSpeed;
+    #sprite; #tint; #destroyed; #xspeed; #yspeed; #disappearingSpeed; #alpha;
 
     constructor(x, y, size, n, color) {
         this.#sprite = new Text(`+${n}`, {
@@ -9,9 +9,9 @@ export class ScoreFloating {
             fontSize: size + n * 2,
             fill : color,
             align : 'center',
-            stroke: 0x001e3b,
-            lineJoin: "round",
-            strokeThickness: 3,
+            dropShadow: true,
+            dropShadowAlpha: 0.5,
+            dropShadowBlur: 7,
         });
         this.#sprite.x = x;
         this.#sprite.y = y;
@@ -19,6 +19,7 @@ export class ScoreFloating {
         this.#yspeed = -5 + Math.random() * -3;
         this.#disappearingSpeed = 0.01 + Math.random() * 0.01;
         this.#destroyed = false;
+        this.#alpha = 1;
     }
 
     getSprite() {
@@ -38,7 +39,8 @@ export class ScoreFloating {
         this.#sprite.y += this.#yspeed * delta;
         this.#yspeed *= (1 - 0.1 * delta);
         this.#xspeed *= (1 - 0.05 * delta);
-        this.#sprite.alpha -= this.#disappearingSpeed * delta;
+        this.#alpha -= this.#disappearingSpeed * delta;
+        this.#sprite.alpha = this.#alpha * 2; 
         if (this.#sprite.alpha <= 0) {
             this.destroy();
         }
