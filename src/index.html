@@ -216,6 +216,9 @@
             top: 460px;
         }
         .bonus {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             position: relative;
             width: 100px;
             height: 100px;
@@ -223,7 +226,12 @@
             background-size: 100%;
             background-repeat: no-repeat;
         }
-        .bonus:hover:after {
+        .bonus-icon {
+            position: relative;
+            top: -15px;
+            font-size: 30px;
+        }
+        .bonus:hover:after, .bonus.active:after {
             content: '';
             position: absolute;
             left: 10%;
@@ -234,6 +242,12 @@
             mix-blend-mode: lighten;
             border-radius: 20%;
             box-shadow: 0 0 10px #ed17fa;
+        }
+        .bonus.active:after {
+            background: #17fad878;
+            mix-blend-mode: lighten;
+            border-radius: 20%;
+            box-shadow: 0 0 30px #17fae5;
         }
         .bonuses-text {
             position: absolute;
@@ -354,9 +368,11 @@
         </div>
         <div class="bonuses-container">
             <div class="bonuses-text">бонусы:</div>
-            <div class="bonus"></div>
-            <div class="bonus"></div>
-            <div class="bonus"></div>
+            <div class="bonus" onclick="dom.activateBonus(event)" data-bonus="pickaxe">
+                <div class="bonus-icon">⛏️</div>
+            </div>
+            <div class="bonus" onclick="dom.activateBonus(event)"></div>
+            <div class="bonus" onclick="dom.activateBonus(event)"></div>
         </div>
     </div>
 
@@ -402,6 +418,9 @@
             handlerForPauseClick(func) {            
                 dom.pause = func;
             },
+            handlerForBonusSelected(func) {
+                dom.bonus = func;
+            },
             showCurtain(text) {
                 document.querySelector('.curtain').style.display = "flex";
                 document.querySelector('.curtain-text').innerHTML = text;
@@ -415,6 +434,22 @@
                 n = (n + 1) % 4;
                 text.innerHTML = `загрузка${'.'.repeat(n)}`;
             },
+            bonus(name) {
+
+            },
+            activateBonus(event) {
+                if (event.target.classList.contains('active')) {
+                    event.target.classList.remove('active');
+                    dom.bonus(null);
+                } else {
+                    dom.unselectBonuses();
+                    event.target.classList.add('active');
+                    dom.bonus(event.target.getAttribute('data-bonus'));
+                }
+            },
+            unselectBonuses() {
+                document.querySelectorAll(`.bonus`).forEach(x => x.classList.remove('active'));
+            }
         }
         dom['loadingAnimation'] = setInterval(dom.animateLoading, 500);
     </script>

@@ -17,8 +17,11 @@ const stages = {
     swapping: 3,
     shuffle: 4,
     win: 5,
-    defeat: 6
+    defeat: 6,
+    bonus_pickaxe: 7
 }
+
+const bonusStages = [7];
 
 export class GameField {
     #sprite; #x; #y; #width; #height; #gemSize; #maskSprite; #stage; #size; #consequentShuffles;
@@ -178,6 +181,9 @@ export class GameField {
 
     async click(x, y) {
         if (this.#stage !== stages.clickable) {
+            if (bonusStages.includes(this.#stage)) {
+                this.bonus(this.#stage, x, y);
+            }
             return; 
         }
 
@@ -192,6 +198,7 @@ export class GameField {
         this.cancelHighlighting();
         minusMove();
 
+        /* удаление блоков */
         for (let f of check) {
             this.#fieldState.clear(f.x, f.y);
             for (let i=0; i<3; i++) {
@@ -231,6 +238,7 @@ export class GameField {
             }
         }
 
+        /* начисляем очки */
         let index = 1;
         for (let c of check) {
             await sleep(100 - index * 3);
@@ -244,14 +252,26 @@ export class GameField {
     }
 
     async mouseover(x, y) {
-        const check = this.checkIfPackable(x, y);
-        if (!check) {
-            this.#animationState.setHighlightedCells([], 0);
+        if (this.#stage === stages.clickable) {
+            const check = this.checkIfPackable(x, y);
+            if (!check) {
+                this.#animationState.setHighlightedCells([], 0);
+                return;
+            }
+            this.#animationState.setHighlightedCells(
+                check.map(o => {return {x:o.x*this.#gemSize + this.#gemSize*0.05, y:o.y*this.#gemSize+this.#gemSize*0.05}}), 
+                this.#gemSize*0.9);
             return;
         }
-        this.#animationState.setHighlightedCells(
-            check.map(o => {return {x:o.x*this.#gemSize + this.#gemSize*0.05, y:o.y*this.#gemSize+this.#gemSize*0.05}}), 
-            this.#gemSize*0.9);
+
+
+        if (this.#stage === stages.bonus_pickaxe) {
+            this.#animationState.setHighlightedCells([], 0);
+            this.#animationState.setHighlightedCells([{x: x*this.#gemSize + this.#gemSize*0.05, y: y*this.#gemSize + this.#gemSize*0.05}], 0);
+            return;
+        }
+
+        this.#animationState.setHighlightedCells([], 0);
     }
 
     async cancelHighlighting() {
@@ -373,6 +393,29 @@ export class GameField {
         check(x, y);
 
         return found.length >= packSize() ? found : false;        
+    }
+
+    useBonus(name) {
+        if (!stages[name] || !bonusStages.includes(stages[name])) {
+            throw new Error(`игровое поле не знает бонуса с названием ${name}`);
+        }
+        this.#stage = stages[name];
+    }
+
+    disableBonus() {
+        dom.unselectBonuses();
+        this.playersTurn(); 
+    }
+
+    bonus(name, x, y) {
+        if (name === stages.bonus_pickaxe) {
+            this.pickaxe(x, y);
+        }
+    }
+
+    pickaxe(x, y) {
+        this.#fieldState.clear(x, y);
+        this.disableBonus();
     }
 
     animate(delta) {

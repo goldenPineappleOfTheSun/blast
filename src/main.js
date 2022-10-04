@@ -32,7 +32,7 @@ function init() {
     const scoreProgressPanel = new ScoreProgressPanel(0, 0, app.screen.width, progressPanelHeight);
     const scoreBonusesPanel = new ScoreBonusesPanel(app.screen.width - bonusesPanelWidth, progressPanelHeight, bonusesPanelWidth, app.screen.height - progressPanelHeight);
     
-    initRules(5, 25, 50, 30);
+    initRules(2, 25, 50, 30);
     state = new GemsState(cellsCount.x, cellsCount.y);
     state.fillRandom();
     animationState = new AnimationsState()
@@ -68,6 +68,13 @@ function init() {
         } else {
             paused = true;
             showCurtain('pause', 'Пауза');
+        }
+    });
+    dom.handlerForBonusSelected((name) => {
+        if (name) {
+            gameField.useBonus(`bonus_${name}`);
+        } else {
+            gameField.disableBonus();
         }
     });
     
