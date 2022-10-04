@@ -450,6 +450,9 @@ export class GameField {
     выключает режим использования бонуса
     */
     disableBonus() {
+        if (this.#bonuses[this.stageName] && this.#bonuses[this.stageName].cancel) {
+            this.#bonuses[this.stageName].cancel(this);
+        }
         dom.unselectBonuses();
         this.playersTurn(); 
     }
