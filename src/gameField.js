@@ -18,13 +18,13 @@ const stages = {
     shuffle: 4,
     win: 5,
     defeat: 6,
-    bonus_pickaxe: 7,
-    bonus_swap_1: 8,
-    bonus_swap_2: 9,
-    bonus_bomb: 10,
+    pickaxe: 7,
+    swap_1: 8,
+    swap_2: 9,
+    bomb: 10,
 }
 
-const bonusStages = [stages.bonus_pickaxe, stages.bonus_swap, stages.bonus_bomb];
+const bonusStages = [stages.pickaxe, stages.swap, stages.bomb];
 
 export class GameField {
     #sprite; #x; #y; #width; #height; #gemSize; #maskSprite; #stage; #size; #consequentShuffles;
@@ -131,6 +131,15 @@ export class GameField {
         return this.#stage;
     }
 
+    get stageName() {
+        for (let name in stages) {
+            if (stages[name] === this.#stage) {
+                return name;
+            }
+        }
+        return null;
+    }
+
     /*
     разрешить игроку тыкать (фактически начать игру)
     */
@@ -185,7 +194,9 @@ export class GameField {
     async click(x, y) {
         if (this.#stage !== stages.clickable) {
             if (bonusStages.includes(this.#stage)) {
-                this.bonus(this.#stage, x, y);
+                console.log(this.stageName)
+                console.log(this[this.stageName])
+                this[this.stageName].call(this, x, y);
             }
             return; 
         }
@@ -267,7 +278,7 @@ export class GameField {
         if (this.#stage === stages.clickable) {
             const check = this.checkIfPackable(x, y);
             if (!check) {
-                this.#animationState.setHighlightedCells([], 0);
+                this.cancelHighlighting();
                 return;
             }
             this.#animationState.setHighlightedCells(
@@ -276,19 +287,25 @@ export class GameField {
             return;
         }
 
-        if (this.#stage === stages.bonus_pickaxe) {
-            this.#animationState.setHighlightedCells([], 0);
-            this.#animationState.setHighlightedCells([{x: x*this.#gemSize + this.#gemSize*0.05, y: y*this.#gemSize + this.#gemSize*0.05}], 0);
+        if (this.#stage === stages.pickaxe) {
+            this.cancelHighlighting();
+            this.#animationState.setHighlightedCells([{x: x*this.#gemSize + this.#gemSize*0.05, y: y*this.#gemSize + this.#gemSize*0.05}], this.#gemSize*0.9);
             return;
         }
 
-        if (this.#stage === stages.bonus_bomb) {
-            this.#animationState.setHighlightedCells([], 0);
-            this.#animationState.setHighlightedCells([{x: x*this.#gemSize + this.#gemSize*0.05, y: y*this.#gemSize + this.#gemSize*0.05}], 0);
+        if (this.#stage === stages.bomb) {
+            this.cancelHighlighting();
+            let cells = [];
+            for (let i=x-1; i<=x+1; i++) {
+                for (let j=y-1; j<=y+1; j++) {
+                    cells.push({x: i*this.#gemSize + this.#gemSize*0.05, y: j*this.#gemSize + this.#gemSize*0.05});
+                }
+            }
+            this.#animationState.setHighlightedCells(cells, this.#gemSize*0.9);
             return;
         }
 
-        this.#animationState.setHighlightedCells([], 0);
+        this.cancelHighlighting();
     }
 
     async cancelHighlighting() {
@@ -378,6 +395,7 @@ export class GameField {
             dom.win();
             return;
         }
+        this.cancelHighlighting();
         this.shuffleIfNeeded();
         this.#stage = stages.clickable;
     }
@@ -412,6 +430,10 @@ export class GameField {
         return found.length >= packSize() ? found : false;        
     }
 
+    /* 
+    включает режим использования бонуса "name"
+    name - название бонуса, должно совпадать с названием одного из доступных режимов (в который поле и перейдет)
+    */
     useBonus(name) {
         if (!stages[name] || !bonusStages.includes(stages[name])) {
             throw new Error(`игровое поле не знает бонуса с названием ${name}`);
@@ -419,18 +441,12 @@ export class GameField {
         this.#stage = stages[name];
     }
 
+    /*
+    выключает режим использования бонуса
+    */
     disableBonus() {
         dom.unselectBonuses();
         this.playersTurn(); 
-    }
-
-    bonus(name, x, y) {
-        if (name === stages.bonus_pickaxe) {
-            this.pickaxe(x, y);
-        }
-        if (name === stages.bonus_bomb) {
-            this.bomb(x, y);
-        }
     }
 
     pickaxe(x, y) {
@@ -440,7 +456,6 @@ export class GameField {
     }
 
     bomb(x, y) {
-        console.log('!');
         for (let i=x-1; i<=x+1; i++) {
             for (let j=y-1; j<=y+1; j++) {
                 this.destroyGem(i, j);

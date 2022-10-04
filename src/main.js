@@ -72,7 +72,7 @@ function init() {
     });
     dom.handlerForBonusSelected((name) => {
         if (name) {
-            gameField.useBonus(`bonus_${name}`);
+            gameField.useBonus(name);
         } else {
             gameField.disableBonus();
         }

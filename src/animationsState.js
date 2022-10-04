@@ -69,7 +69,7 @@ export class AnimationsState {
     setHighlightedCells(arr, cellSize) {
         let index = 0;
         if (!arr || arr.length > 0) {
-            for (index in arr) {
+            while (index < arr.length) {
                 if (this.#highlightSprites.length-1 < index) {
                     this.#highlightSprites[index] = new Graphics();
                     this.#highlightSprites[index].beginFill(0xffffff);
@@ -81,9 +81,9 @@ export class AnimationsState {
                 }
                 this.#highlightSprites[index].x = arr[index].x;
                 this.#highlightSprites[index].y = arr[index].y;
-                this.#highlightSprites[index].scale = {x:1, y:1}
+                this.#highlightSprites[index].scale = {x:1, y:1};
+                index++;
             }
-            index++;
         }
         for (index=index; index < this.#highlightSprites.length; index++) {
             this.#highlightSprites[index].scale = {x:0, y:0}
