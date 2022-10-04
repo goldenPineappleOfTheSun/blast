@@ -37,13 +37,15 @@ export function onResourcesLoaded(func) {
 }
 
 export function getTexture(name) {
-    return loader.resources.spritesheet.textures[`${name}.png`];
+    return loader.resources.spritesheet.textures
+        ? loader.resources.spritesheet.textures[`${name}.png`]
+        : null;
 }
 
 export function getFrame(name) {
     return loader.resources.spritesheet.data
         ? loader.resources.spritesheet.data.frames[`${name}.png`].frame
-        : null;
+        : {x:0, y:0, w:1, h:1};
 }
 
 onResourcesLoaded(async () => {
