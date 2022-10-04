@@ -45,7 +45,7 @@ export function animate(delta) {
 
     const dom_score = document.querySelector('.score-text-2');
     if (dom_score) {
-        dom_score.style.fontSize = `${25 + scoreYelling}px`;
+        dom_score.style.transform = `scale(${1 + scoreYelling * 0.03})`;
     }
 }
 
