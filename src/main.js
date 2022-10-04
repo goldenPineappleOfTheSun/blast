@@ -9,6 +9,9 @@ import { AnimationsState } from './animationsState.js';
 import { init as initCurtain, showCurtain, hideCurtain } from './curtain.js';
 import { init as initParticles, animateParticles } from './particles.js';
 import { init as initRules, animate as animateScore } from './scores.js'
+import { addPickaxeBonusToGamefield } from './pickaxeBonus.js';
+import { addBombBonusToGamefield } from './bombBonus.js';
+import { addSwapBonusToGamefield } from './swapBonus.js';
 
 const cellsCount = {x:8, y:8};
 const gameFieldPadding = 50;
@@ -49,6 +52,10 @@ function init() {
         .start();
     animationState
         .handlerForEndAnimation(gameField.playersTurn.bind(gameField));
+
+    addPickaxeBonusToGamefield(gameField);
+    addBombBonusToGamefield(gameField);
+    addSwapBonusToGamefield(gameField);
 
     app.stage.addChild(scoreProgressPanel.getSprite());
     app.stage.addChild(scoreBonusesPanel.getSprite());

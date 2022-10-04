@@ -10,24 +10,9 @@ import { createParticle } from './particles.js';
 import { getMinPackSize as packSize, getMovesLeft, getTargetScore, getScore, move as minusMove, addScore, getMaxConsequentShuffles } from './scores.js';
 import { readGemColor } from './gemTypes.js';
 
-const stages = {
-    notStarted: 0,
-    clickable: 1,
-    animation: 2,
-    swapping: 3,
-    shuffle: 4,
-    win: 5,
-    defeat: 6,
-    pickaxe: 7,
-    swap_1: 8,
-    swap_2: 9,
-    bomb: 10,
-}
-
-const bonusStages = [stages.pickaxe, stages.swap, stages.bomb];
-
 export class GameField {
     #sprite; #x; #y; #width; #height; #gemSize; #maskSprite; #stage; #size; #consequentShuffles;
+    #stages; #bonuses; #lastBonusStageId;
 
     /* спрайты камней. не несут логики - только отображение. каждый гем отвечает за отображение одной ячейки 
     (и не падает вниз вместе с камнями, ничего такого, просто следит за одной ячейкой и отрисовывает её состояние) */
@@ -46,13 +31,24 @@ export class GameField {
     y - позиция в пикселях
     */
     constructor(x, y) {
+        this.#stages = {
+            notStarted: 0,
+            clickable: 1,
+            animation: 2,
+            swapping: 3,
+            shuffle: 4,
+            win: 5,
+            defeat: 6,
+        }
+
+
         this.#sprite = new Container();
         this.#x = x;
         this.#y = y;
         this.#width = 0;
         this.#height = 0;
         this.#gemSize = 0;
-        this.#stage = stages.notStarted;
+        this.#stage = this.#stages.notStarted;
         this.#consequentShuffles = 0;
 
         this.#maskSprite = new Graphics();
@@ -60,6 +56,37 @@ export class GameField {
         this.#sprite.mask = this.#maskSprite;
 
         this.#gems = [];
+        this.#lastBonusStageId = 100;
+        this.#bonuses = {};
+    }
+
+    get gemSize() {
+        return this.#gemSize;
+    }
+
+    get width() {
+        return this.#width;
+    }
+
+    get height() {
+        return this.#height;
+    }
+
+    get position() {
+        return {x: this.#x, y:this.#y};
+    }
+
+    get stage() {
+        return this.#stage;
+    }
+
+    get stageName() {
+        for (let name in this.#stages) {
+            if (this.#stages[name] === this.#stage) {
+                return name;
+            }
+        }
+        return null;
     }
 
     /*
@@ -111,40 +138,11 @@ export class GameField {
         return this;
     }
 
-    get gemSize() {
-        return this.#gemSize;
-    }
-
-    get width() {
-        return this.#width;
-    }
-
-    get height() {
-        return this.#height;
-    }
-
-    get position() {
-        return {x: this.#x, y:this.#y};
-    }
-
-    get stage() {
-        return this.#stage;
-    }
-
-    get stageName() {
-        for (let name in stages) {
-            if (stages[name] === this.#stage) {
-                return name;
-            }
-        }
-        return null;
-    }
-
     /*
     разрешить игроку тыкать (фактически начать игру)
     */
     start() {
-        if (this.#stage !== stages.notStarted) {
+        if (this.#stage !== this.#stages.notStarted) {
             throw new Error('Нельзя запустить более одного раза'); 
         }
         if (!this.#gemSize || !this.#width || !this.#height) {
@@ -153,7 +151,7 @@ export class GameField {
         if (!this.#fieldState || !this.#animationState) {
             throw new Error('Перед запуском надо вызвать setStateHolders'); 
         }
-        this.#stage = stages.clickable;
+        this.#stage = this.#stages.clickable;
 
         this.#maskSprite.beginFill(0xff9800);
         this.#maskSprite.drawRect(-20, -20, this.#width + 40, this.#height + 40);
@@ -187,17 +185,31 @@ export class GameField {
         return this;
     }
 
+    addBonus(name, bonus) {
+        this.#stages[name] = this.#lastBonusStageId;
+        this.#lastBonusStageId++;
+        this.#bonuses[name] = bonus;
+    }
+
     getSprite() {
         return this.#sprite;
     }
 
-    async click(x, y) {
-        if (this.#stage !== stages.clickable) {
-            if (bonusStages.includes(this.#stage)) {
-                console.log(this.stageName)
-                console.log(this[this.stageName])
-                this[this.stageName].call(this, x, y);
+    setStage(name) {
+        for (let x in this.#stages) {
+            if (x === name) {
+                this.#stage = this.#stages[x];
             }
+        }
+    }
+
+    async click(x, y) {
+        if (this.#stage !== this.#stages.clickable) {
+
+            if (this.#bonuses[this.stageName]) {
+                this.#bonuses[this.stageName].click(this, x, y);
+            }
+
             return; 
         }
 
@@ -208,7 +220,7 @@ export class GameField {
 
         check = check.map(o => {return {color: this.#fieldState.get(o.x, o.y), ...o}});
 
-        this.#stage = stages.animation;
+        this.#stage = this.#stages.animation;
         this.cancelHighlighting();
         minusMove();
 
@@ -275,40 +287,36 @@ export class GameField {
     }
 
     async mouseover(x, y) {
-        if (this.#stage === stages.clickable) {
+        if (this.#stage === this.#stages.clickable) {
             const check = this.checkIfPackable(x, y);
             if (!check) {
                 this.cancelHighlighting();
                 return;
             }
-            this.#animationState.setHighlightedCells(
+            this.highlight(check);
+            /*this.#animationState.setHighlightedCells(
                 check.map(o => {return {x:o.x*this.#gemSize + this.#gemSize*0.05, y:o.y*this.#gemSize+this.#gemSize*0.05}}), 
-                this.#gemSize*0.9);
+                this.#gemSize*0.9);*/
             return;
         }
 
-        if (this.#stage === stages.pickaxe) {
-            this.cancelHighlighting();
-            this.#animationState.setHighlightedCells([{x: x*this.#gemSize + this.#gemSize*0.05, y: y*this.#gemSize + this.#gemSize*0.05}], this.#gemSize*0.9);
-            return;
-        }
-
-        if (this.#stage === stages.bomb) {
-            this.cancelHighlighting();
-            let cells = [];
-            for (let i=x-1; i<=x+1; i++) {
-                for (let j=y-1; j<=y+1; j++) {
-                    cells.push({x: i*this.#gemSize + this.#gemSize*0.05, y: j*this.#gemSize + this.#gemSize*0.05});
-                }
-            }
-            this.#animationState.setHighlightedCells(cells, this.#gemSize*0.9);
+        if (this.#bonuses[this.stageName]) {
+            this.#bonuses[this.stageName].highlight(this, x, y);
             return;
         }
 
         this.cancelHighlighting();
     }
 
-    async cancelHighlighting() {
+    highlight(cells) {
+        this.cancelHighlighting();
+        this.#animationState.setHighlightedCells(cells.map(o => ({
+            x:o.x*this.#gemSize + this.#gemSize*0.05, 
+            y:o.y*this.#gemSize+this.#gemSize*0.05})), 
+            this.#gemSize*0.9);
+    }
+
+    cancelHighlighting() {
         this.#animationState.setHighlightedCells([], 0);
     }
 
@@ -318,10 +326,7 @@ export class GameField {
     b {x, y} - координаты второго камня
     */
     swap(a, b) {
-        if (this.#stage !== stages.clickable && this.#stage !== stages.swapping) {
-            return;
-        }
-        this.#stage = stages.swapping;
+        this.#stage = this.#stages.swapping;
         this.#animationState.put(new SwappingGem(a, b, this.#fieldState.get(a.x, a.y)));
         this.#animationState.put(new SwappingGem(b, a, this.#fieldState.get(b.x, b.y)));
         this.#fieldState.clear(a.x, a.y);
@@ -342,13 +347,13 @@ export class GameField {
         }
 
         if (this.#consequentShuffles >= getMaxConsequentShuffles()) {
-            this.#stage = stages.defeat;
+            this.#stage = this.#stages.defeat;
             showCurtain('defeat', `Поражение!</div><div style="font-size: 13px;">слишком много неудачных перетасовок</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">`)
             dom.defeat();
             return;
         }
 
-        this.#stage = stages.shuffle;
+        this.#stage = this.#stages.shuffle;
 
         this.#consequentShuffles++;
 
@@ -384,20 +389,20 @@ export class GameField {
     /* все анимации закончились и снова можно тыкать */
     playersTurn() {
         if (getMovesLeft() <= 0) {
-            this.#stage = stages.defeat;
+            this.#stage = this.#stages.defeat;
             showCurtain('defeat', `Поражение!</div><div style="font-size: 13px;">ходы закончились</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">`)
             dom.defeat();
             return;
         }
         if (getTargetScore() <= getScore()) {
-            this.#stage = stages.win;
+            this.#stage = this.#stages.win;
             showCurtain('win', 'победа!');
             dom.win();
             return;
         }
         this.cancelHighlighting();
         this.shuffleIfNeeded();
-        this.#stage = stages.clickable;
+        this.#stage = this.#stages.clickable;
     }
 
     checkIfPackable(x, y) {
@@ -435,10 +440,10 @@ export class GameField {
     name - название бонуса, должно совпадать с названием одного из доступных режимов (в который поле и перейдет)
     */
     useBonus(name) {
-        if (!stages[name] || !bonusStages.includes(stages[name])) {
+        if (!this.#stages[name] || !this.#bonuses[name]) {
             throw new Error(`игровое поле не знает бонуса с названием ${name}`);
         }
-        this.#stage = stages[name];
+        this.#stage = this.#stages[name];
     }
 
     /*
@@ -447,22 +452,6 @@ export class GameField {
     disableBonus() {
         dom.unselectBonuses();
         this.playersTurn(); 
-    }
-
-    pickaxe(x, y) {
-        this.destroyGem(x, y);
-        this.fall();
-        this.disableBonus();
-    }
-
-    bomb(x, y) {
-        for (let i=x-1; i<=x+1; i++) {
-            for (let j=y-1; j<=y+1; j++) {
-                this.destroyGem(i, j);
-            }
-        }
-        this.fall();
-        this.disableBonus();
     }
 
     animate(delta) {

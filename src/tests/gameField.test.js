@@ -253,17 +253,10 @@ test('if there are moves at the beginning then game musnt shuffle', () => {
     expect(field.stage).toBe(1);
 });
 
-test('if there are no moves left - game is over', () => {
-    initRules(1, 1, 1e9);
-    const state = createExampleGemState();
-    const field = createExampleField().setStateHolders(state, animationsState).start();
-    field.click(1, 1);
-    expect(field.stage).toBe(6);
-});
-
 /*
 TODO: замокать animation state и проверить сложные кейсы:
 после клика поле всегда заполняется полностью новыми камнями
+после, когда все анимации закончатся, ходов может больше не остаться и это геймовер
 клик может привести к шафлу, если нет ходов, 
 много щафлов приводят к поражению
 */
