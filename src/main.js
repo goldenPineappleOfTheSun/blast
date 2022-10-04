@@ -13,7 +13,11 @@ import { addPickaxeBonusToGamefield } from './pickaxeBonus.js';
 import { addBombBonusToGamefield } from './bombBonus.js';
 import { addSwapBonusToGamefield } from './swapBonus.js';
 
-const cellsCount = {x:8, y:8};
+const urlParams = location.search ? location.search.split('?')[1].split('&').reduce((acc, cur) => {
+    acc[cur.split('=')[0]] = +cur.split('=')[1];
+    return acc;
+}, {}) : {};
+const cellsCount = {x:(urlParams.width || 8), y:(urlParams.height || 8)};
 const gameFieldPadding = 50;
 
 let started = false; 
@@ -32,10 +36,11 @@ const app = new Application({
 document.body.appendChild(app.view);
 
 function init() {
+
     const scoreProgressPanel = new ScoreProgressPanel(0, 0, app.screen.width, progressPanelHeight);
     const scoreBonusesPanel = new ScoreBonusesPanel(app.screen.width - bonusesPanelWidth, progressPanelHeight, bonusesPanelWidth, app.screen.height - progressPanelHeight);
     
-    initRules(1, 25, 50, 30);
+    initRules(urlParams.pack || 2, urlParams.moves || 25, urlParams.target || 250, urlParams.shuffles || 10);
     state = new GemsState(cellsCount.x, cellsCount.y);
     state.fillRandom();
     animationState = new AnimationsState()

@@ -243,6 +243,14 @@ export class GameField {
             addScore(+index);
             index++;
         }
+
+        if (getTargetScore() <= getScore()) {
+            hideCurtain('defeat');
+            this.#stage = this.#stages.win;
+            showCurtain('win', 'победа!');
+            dom.win();
+            return;
+        }
     }
 
     destroyGem(x, y) {
@@ -391,12 +399,6 @@ export class GameField {
             this.#stage = this.#stages.defeat;
             showCurtain('defeat', `Поражение!</div><div style="font-size: 13px;">ходы закончились</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">`)
             dom.defeat();
-            return;
-        }
-        if (getTargetScore() <= getScore()) {
-            this.#stage = this.#stages.win;
-            showCurtain('win', 'победа!');
-            dom.win();
             return;
         }
         this.cancelHighlighting();
