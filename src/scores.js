@@ -3,11 +3,13 @@ let moves = 10;
 let score = 0;
 let scoreYelling = 0;
 let target = 100;
+let maxShuffles = 100;
 
-export function init(_minPackSize, _moves, _target) {
+export function init(_minPackSize, _moves, _target, _maxShuffles) {
     minPackSize = _minPackSize;
     moves = _moves;
     target = _target;
+    maxShuffles = _maxShuffles;
     updateMoves(moves);
     updateScore(0);
     updateTarget(target)
@@ -23,6 +25,10 @@ export function getMovesLeft() {
 
 export function getTargetScore() {
     return target;
+}
+
+export function getMaxConsequentShuffles() {
+    return maxShuffles;
 }
 
 export function getScore() {

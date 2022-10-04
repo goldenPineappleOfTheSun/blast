@@ -31,6 +31,8 @@ document.body.appendChild(app.view);
 function init() {
     const scoreProgressPanel = new ScoreProgressPanel(0, 0, app.screen.width, progressPanelHeight);
     const scoreBonusesPanel = new ScoreBonusesPanel(app.screen.width - bonusesPanelWidth, progressPanelHeight, bonusesPanelWidth, app.screen.height - progressPanelHeight);
+    
+    initRules(2, 25, 50, 3);
     state = new GemsState(cellsCount.x, cellsCount.y);
     state.fillRandom();
     animationState = new AnimationsState()
@@ -54,7 +56,6 @@ function init() {
     gameField.getSprite().addChild(animationState.getSprite());
 
     app.stage.addChild(initParticles());
-    initRules(2, 25, 50);
 
     let dom_body = document.querySelector('body');
     if (dom_body) {

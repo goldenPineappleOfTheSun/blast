@@ -7,7 +7,7 @@ import { ScoreFloating } from './scoreFloating.js';
 import { dice, sleep } from './utils.js';
 import { showCurtain, hideCurtain } from './curtain.js';
 import { createParticle } from './particles.js';
-import { getMinPackSize as packSize, getMovesLeft, getTargetScore, getScore, move as minusMove, addScore } from './scores.js';
+import { getMinPackSize as packSize, getMovesLeft, getTargetScore, getScore, move as minusMove, addScore, getMaxConsequentShuffles } from './scores.js';
 import { readGemColor } from './gemTypes.js';
 
 const stages = {
@@ -20,7 +20,7 @@ const stages = {
 }
 
 export class GameField {
-    #sprite; #x; #y; #width; #height; #gemSize; #maskSprite; #stage; #size;
+    #sprite; #x; #y; #width; #height; #gemSize; #maskSprite; #stage; #size; #consequentShuffles;
 
     /* спрайты камней. не несут логики - только отображение. каждый гем отвечает за отображение одной ячейки 
     (и не падает вниз вместе с камнями, ничего такого, просто следит за одной ячейкой и отрисовывает её состояние) */
@@ -46,6 +46,7 @@ export class GameField {
         this.#height = 0;
         this.#gemSize = 0;
         this.#stage = stages.notStarted;
+        this.#consequentShuffles = 0;
 
         this.#maskSprite = new Graphics();
         this.#sprite.addChild(this.#maskSprite);
@@ -275,10 +276,20 @@ export class GameField {
         for (let i=0; i<this.#size.x; i++) {
             for (let j=0; j<this.#size.y; j++) {
                 if (this.checkIfPackable(i, j)) {
+                    this.#consequentShuffles = 0;
                     return;
                 }
             }
         }
+
+        if (this.#consequentShuffles >= getMaxConsequentShuffles()) {
+            this.#stage = stages.defeat;
+            showCurtain('defeat', `Поражение!</div><div style="font-size: 13px;">слишком много неудачных перетасовок</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">`)
+            dom.defeat();
+            return;
+        }
+
+        this.#consequentShuffles++;
 
         await sleep(300);
         showCurtain('shuffle-anouncer', 'Нет ходов...\nПеремешиваем!');
@@ -307,7 +318,6 @@ export class GameField {
                 this.#fieldState.clear(x, y);
             }
         }
-
     }
 
     /* все анимации закончились и снова можно тыкать */
@@ -315,7 +325,7 @@ export class GameField {
         if (getMovesLeft() <= 0) {
             this.#stage = stages.defeat;
             showCurtain('defeat', `Поражение!</div><div style="font-size: 13px;">ходы закончились</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">`)
-            dom.defeat('ходы закончились');
+            dom.defeat();
             return;
         }
         if (getTargetScore() <= getScore()) {
