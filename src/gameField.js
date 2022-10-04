@@ -10,6 +10,13 @@ import { createParticle } from './particles.js';
 import { getMinPackSize as packSize, getMovesLeft, getTargetScore, getScore, move as minusMove, addScore, getMaxConsequentShuffles } from './scores.js';
 import { readGemColor } from './gemTypes.js';
 
+/*
+Контроллер для игрового поля
+Ему надо передать объект GemsState, AnimationsState,
++ некоторые ещё настройки
+После чего он генерирует набор объектов Cell
+*/
+
 export class GameField {
     #sprite; #x; #y; #width; #height; #gemSize; #maskSprite; #stage; #size; #consequentShuffles;
     #stages; #bonuses; #lastBonusStageId;
@@ -185,6 +192,15 @@ export class GameField {
         return this;
     }
 
+    /* 
+    добавляет бонус (например, бомбу)
+    name - название. Важная характеристика, именно по имени всё связывается
+    bonus - {
+        highlight(gameField, x, y) - вызывается при наведении на камень
+        click(gameField, x, y) - вызывается при клике на камень
+        cancel(gameField, x, y) - вызывается при отмене бонуса (игрок передумал пользоваться бонусом)
+    }
+    */
     addBonus(name, bonus) {
         this.#stages[name] = this.#lastBonusStageId;
         this.#lastBonusStageId++;
@@ -195,6 +211,7 @@ export class GameField {
         return this.#sprite;
     }
 
+    /* установить стейдж */
     setStage(name) {
         for (let x in this.#stages) {
             if (x === name) {
@@ -203,6 +220,7 @@ export class GameField {
         }
     }
 
+    /* клик по полю */
     async click(x, y) {
         if (this.#stage !== this.#stages.clickable) {
 
@@ -253,6 +271,7 @@ export class GameField {
         }
     }
 
+    /* удаляем камень */
     destroyGem(x, y) {
         this.#fieldState.clear(x, y);
         for (let i=0; i<3; i++) {
@@ -263,6 +282,10 @@ export class GameField {
         }
     }
 
+    /* 
+    смотрим на всё поле, считаем недостающие камни и камни, подвешенные в воздухе
+    соответственно накидываем сверху новых
+    */
     fall() {
         /* подкидываем новые блоки сверху */
         for (let i=0; i<this.#size.x; i++) {
@@ -294,6 +317,7 @@ export class GameField {
         }
     }
 
+    /* при наведении мышкой на камень */
     async mouseover(x, y) {
         if (this.#stage === this.#stages.clickable) {
             const check = this.checkIfPackable(x, y);
@@ -313,6 +337,7 @@ export class GameField {
         this.cancelHighlighting();
     }
 
+    /* подсветить клетки */
     highlight(cells) {
         this.cancelHighlighting();
         this.#animationState.setHighlightedCells(cells
@@ -323,6 +348,7 @@ export class GameField {
                 this.#gemSize*0.9);
     }
 
+    /* отменить подсветку клеток */
     cancelHighlighting() {
         this.#animationState.setHighlightedCells([], 0);
     }
@@ -406,6 +432,9 @@ export class GameField {
         this.#stage = this.#stages.clickable;
     }
 
+    /* 
+    false, если нажатие по этой клетке ничего не даст, 
+    набор рядомстоящих одноцветных клеток - в противном случае  */
     checkIfPackable(x, y) {
         const state = (x, y) => this.#fieldState.get(x, y);
         if (!state(x, y)) {

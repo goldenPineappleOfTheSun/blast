@@ -397,6 +397,7 @@
 
     <script>
         const dom = {
+            /* скрывает экран загрузки. Надо вызвать, когда окончится загрузка */
             loaded() {
                 clearInterval(dom.loadingAnimation);
                 document.querySelector('.loading').style.opacity = 0;
@@ -404,10 +405,12 @@
                     document.querySelector('.loading').style.display = "none";
                 }, 500)
             },
+            /* показать экран поражения */
             defeat() {
                 document.querySelector('.curtain').style.background = "none";
                 document.querySelector('.blue-defeat').style.display = "block";
             },
+            /* показать экран победы */
             win() {
                 document.querySelector('.curtain').style.background = "linear-gradient(to right top, #f237a1, #f8718f88, #ff837188, #ffa05088, #ffc43588, #ffc92f88, #27c0fe88, #fdd21f88, #ffb62b88, #ff9a3d88, #ff814f88, #c618f888)";
                 document.querySelector('.curtain').style.mixBlendMode = 'hard-light';
@@ -417,31 +420,42 @@
                     document.querySelector('.curtain').style.background = `linear-gradient(${t}turn, #f237a1, #f8718f88, #ff837188, #ffa05088, #ffc43588, #ffc92f88, #27c0fe88, #fdd21f88, #ffb62b88, #ff9a3d88, #ff814f88, #c618f888)`;
                 }, 40)
             },
+            /* хэндлер нажатия на кнопку пауза. Изначально пустой, но может быть заполнен через dom.handlerForPauseClick */
             pause: () => {
 
             },
+            /* назначить обработчик для события нажатия на паузу */
             handlerForPauseClick(func) {            
                 dom.pause = func;
             },
+            /* назначить обработчик для события нажатия на бонус */
             handlerForBonusSelected(func) {
                 dom.bonus = func;
             },
+            /* включает стили для занавески */
             showCurtain(text) {
                 document.querySelector('.curtain').style.display = "flex";
                 document.querySelector('.curtain-text').innerHTML = text;
             },
+            /* выключает стили для занавески */
             hideCurtain() {
                 document.querySelector('.curtain').style.display = "none";
             },
+            /* анимация загрузки */
             animateLoading() {
                 let text = document.querySelector('.loading-text');
                 let n = (text.innerHTML.match(/\./g) || []).length;
                 n = (n + 1) % 4;
                 text.innerHTML = `загрузка${'.'.repeat(n)}`;
             },
+            /* 
+            хэндлер нажатия на кнопку бонуса. Изначально пустой, но может быть заполнен через dom.handlerForBonusSelected 
+            name - название бонуса (оно прокидывается много где - смотри пояснения в readme.md)
+            */
             bonus(name) {
 
             },
+            /* включает у игрового поля режим использования бонуса. название бонуса */
             activateBonus(event) {
                 if (event.target.classList.contains('active')) {
                     event.target.classList.remove('active');
@@ -452,6 +466,7 @@
                     dom.bonus(event.target.getAttribute('data-bonus'));
                 }
             },
+            /* отменят выбор всех бонусов */
             unselectBonuses() {
                 document.querySelectorAll(`.bonus`).forEach(x => x.classList.remove('active'));
             }

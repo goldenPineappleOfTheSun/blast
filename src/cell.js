@@ -2,6 +2,20 @@ import { Container, Graphics, Sprite } from 'pixi.js'
 import { readGemColor } from './gemTypes.js'
 import { getFrame } from './loader.js'
 
+/*
+Важный модуль
+
+С одной стороны это камень (из которых поле состоит)
+Но с другой стороны всё сложнее. На самом деле это клетка на поле
+Камней даже теоретически не должно быть больше чем клеток на поле, иначе куда их ставить.
+Если их всё же больше, то либо поле должно быть больше, либо новые камни это только объект дизайна
+следовательно, достаточно иметь по одному спрайту камня для каждой клетки. Это и есть Cell.js
+
+Можно сказать, что это визуальная часть поля (логическая находится в GemsState и AnimatinsState)
+Этот модуль считывает данные о текущем состоянии из GemsState и AnimationsState и решает как именно должен выглядеть 
+камень в его клетке. Либо покоится и ждать клика либо лететь где-то выше
+*/
+
 export class Cell {
     #sprite; #gemSprite; #size; #position; #x; #y; #getstate; #getanimationstate; #onclick; #onmouseover;
 
@@ -39,21 +53,31 @@ export class Cell {
         return this.#sprite;
     }
 
+    /* 
+    установить обработчик. Функцию () => GemColors, которая считывает текущее состояние клетки из GemsState 
+    то есть Cell будет вызывать эту функцию func() в надежде, что x и y уже сами подставлены и она просто вернёт состояние клетки
+    */
     handlerForGetCurrentState(func) {
         this.#getstate = func;
         return this;
     }
 
+    /* 
+    установить обработчик. Функцию () => какойто-объект, которая считывает текущее состояние клетки из AnimationsState 
+    то есть Cell будет вызывать эту функцию func() в надежде, что x и y уже сами подставлены и она просто вернёт состояние клетки
+    */
     handlerForGetCurrentAnimationState(func) {
         this.#getanimationstate = func;
         return this;
     }
 
+    /* установить обработчик. Функцию () => void, будет срабатывать при клике на клетку */
     handlerForClick(func) {
         this.#onclick = func;
         return this;
     }
 
+    /* установить обработчик. Функцию () => void, будет срабатывать при наведении на клетку */
     handlerForMouseover(func) {
         this.#onmouseover = func;
         return this;

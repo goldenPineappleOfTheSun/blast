@@ -1,5 +1,11 @@
 import { GameField } from './gameField.js';
 
+/*
+Бонус
+Подсвечивает участок поля
+Этот же участок взрывает, не давая очков
+*/
+
 function highlight(field, x, y) {
     let cells = [];
     for (let i=x-1; i<=x+1; i++) {

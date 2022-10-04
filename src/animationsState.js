@@ -2,6 +2,21 @@ import { Graphics, Container, BLEND_MODES } from 'pixi.js';
 import { FallingGem } from './fallingGem.js';
 import { SwappingGem } from './swappingGem.js';
 
+/*
+Один из важнейших компонентов
+Хранит в себе инфу об анимациях, происходящих с камнями
+Когда анимация закончена, решает, что делать с камнем (в зависимости от типа камня и текущей экспзициии)
+По окончанию анимации может, например, превратить анимацию в нормальный игровой камень (в который тыкают)
+Когда не осталось анимаций, оповещает об этом gameField (см. animationended)
+Умеет подсвечивать камни (см. setHighlightedCells)
+
+На данный момент реализовано 2 вида анимированных камней
+Я размышлял над тем, чтобы вынести возможность добавления камней наружу 
+(чтобы не приходилось каждый раз менять код прямо в этом модуле), но
+пока что мало данных для того как лучше это устроить. Если видов анимаций
+вдруг станет больше, то такой рефакторинг можно будет провести
+*/
+
 export class AnimationsState {
     #sprite; #field; #getstate; #putgem; #getsize; #animationended; #highlightSprites;
 
@@ -15,35 +30,36 @@ export class AnimationsState {
         return this.#sprite;
     }
 
+    /* возвращает количество неоконченных анимаций */
     count() {
         return this.#field.length;
     }
 
-    /* указать функцию (x:int, y:int) => cellState, которая определяет состояние ячейки из gemsState */
+    /* установить обработчик. Функцию (x:int, y:int) => cellState, которая определяет состояние ячейки из gemsState */
     handlerForGetCellState(func) {
         this.#getstate = func;
         return this;
     }
 
-    /* указать функцию (x:int, y:int) => void, которая умеет класть камень в gemsState */
+    /* установить обработчик. Функцию (x:int, y:int) => void, которая умеет класть камень в gemsState */
     handlerForPutStaticGem(func) {
         this.#putgem = func;
         return this;
     }
 
-    /* указать функцию () => {x:int, y:int}, которая отдаёт размер поля */
+    /* установить обработчик. Функцию () => {x:int, y:int}, которая отдаёт размер поля */
     handlerForGetFieldSize(func) {
         this.#getsize = func;
         return this;
     }
 
-    /* указать функцию () => void, которая вызовется, когда все анимации и падения завершатся */
+    /* установить обработчик. Функцию () => void, которая вызовется, когда все анимации и падения завершатся */
     handlerForEndAnimation(func) {
         this.#animationended = func;
         return this;
     }
 
-    /* добавить ещё один камень */
+    /* добавить ещё одну анимацию */
     put(gem) {
         const allowedcolors = [FallingGem, SwappingGem];
         if (!allowedcolors.some(o => gem instanceof o)) {
@@ -138,7 +154,7 @@ export class AnimationsState {
     привела меня к сложностям, к тому что Cell может справиться не с каждым состоянием,
     которое предлагает ему AnimationsState
     Так что либо делаем Cell и AnimationsState.get() более универсальным, либо просим AnimationsState быть вежливее
-    я выбрал второе
+    Я выбрал второе
     */
     normalize() {
         /* #1 убеждаемся, что падающие камни не наезжают друг на друга */
@@ -182,8 +198,24 @@ export class AnimationsState {
     /* 
     узнать состояние клетки в указанных координатах
     возвращаемое значение имеет формат:
+
+    для FallingGem:
     {
-        
+        cell: {
+            animation: 'falling',
+            color: цвет камня "gemColors"
+            offset: текущее смещение относительно нижнего края клетки,
+            rotation: текущий поворот спрайта,
+        }
+    }
+
+    для SwappingGem:
+    {
+        cell: {
+            animation: 'swapping',
+            color: цвет камня "gemColors"
+            offset: текущее смещение спрайта относительно его изначальной клетки
+        }
     }
     */
     get(x, y) {

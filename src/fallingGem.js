@@ -1,3 +1,8 @@
+/*
+Анимация для AnimationState
+Выглядят как обычные, но падающие вниз игровые камни
+*/
+
 export class FallingGem {
     #color; #maxvelocity; #acceleration;
 

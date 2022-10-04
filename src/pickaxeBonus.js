@@ -1,5 +1,10 @@
 import { GameField } from './gameField.js';
 
+/*
+Бонус
+Ломает один камень
+*/
+
 function highlight(field, x, y) {
     field.highlight([{x, y}]);         
 }

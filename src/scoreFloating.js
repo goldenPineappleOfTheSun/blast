@@ -1,5 +1,11 @@
 import { Container, Text } from 'pixi.js'
 
+/*
+Партикли
+Выглядят как цифра, равная количеству полученных очков
+Улетают куда-то вверх
+*/
+
 export class ScoreFloating {
     #sprite; #tint; #destroyed; #xspeed; #yspeed; #disappearingSpeed; #alpha;
 

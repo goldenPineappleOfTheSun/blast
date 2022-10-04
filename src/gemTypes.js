@@ -1,5 +1,10 @@
 import { getTexture } from './loader.js';
 
+/* 
+хранит типы (цвета) камней
+если спросить подробности о цвете, то расскажет
+*/
+
 export const gemColors = {
     blue: Symbol('blue gem'),
     purple: Symbol('purple gem'),

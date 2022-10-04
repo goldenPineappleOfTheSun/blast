@@ -1,6 +1,13 @@
 import { Sprite, Graphics } from 'pixi.js'
 import { getTexture, getFrame } from './loader.js';
 
+/*
+Партикли
+Выглядят как пузырь
+Остаются после разрушения камней
+Улетают куда-то вверх
+*/
+
 export class Bubble {
     #tint; #lifetime; #sprite; #destroyed; #direction; #steeringSpeed; #speed; #elevationSpeed;
 
