@@ -297,6 +297,19 @@
         .loading-text {
             position: relative;
         }
+        .blue-defeat {
+            display: none;
+            position: fixed;
+            left: -50vw;
+            top: -50vh;
+            width: 100%;
+            width: 200vw;
+            height: 100%;
+            height: 200vh;
+            background: linear-gradient(to right top, #6b84d1, #00a1ea, #00bcec, #00d3da, #00e6b8, #00e8c0, #00e9c7, #00ebce, #00dafc, #00c1ff, #009cff, #b95ffb);
+            mix-blend-mode: color;
+            z-index: 10;
+        }
         @media (max-width: 1000px) {
             body.loaded {
                 transform: scale(0.7);
@@ -351,6 +364,8 @@
 
     <div class="bg"></div>
 
+    <div class="blue-defeat"></div>
+
     <div class="curtain">
         <div class="curtain-text"></div>
     </div>
@@ -368,6 +383,19 @@
                     document.querySelector('.loading').style.display = "none";
                 }, 500)
             },
+            defeat() {
+                document.querySelector('.curtain').style.background = "none";
+                document.querySelector('.blue-defeat').style.display = "block";
+            },
+            win() {
+                document.querySelector('.curtain').style.background = "linear-gradient(to right top, #f237a1, #f8718f88, #ff837188, #ffa05088, #ffc43588, #ffc92f88, #27c0fe88, #fdd21f88, #ffb62b88, #ff9a3d88, #ff814f88, #c618f888)";
+                document.querySelector('.curtain').style.mixBlendMode = 'hard-light';
+                let t = 0.25;
+                setInterval(() => {
+                    t += 0.01;
+                    document.querySelector('.curtain').style.background = `linear-gradient(${t}turn, #f237a1, #f8718f88, #ff837188, #ffa05088, #ffc43588, #ffc92f88, #27c0fe88, #fdd21f88, #ffb62b88, #ff9a3d88, #ff814f88, #c618f888)`;
+                }, 40)
+            },
             pause: () => {
 
             },
@@ -375,6 +403,7 @@
                 dom.pause = func;
             },
             showCurtain(text) {
+                console.log(text);
                 document.querySelector('.curtain').style.display = "flex";
                 document.querySelector('.curtain-text').innerHTML = text;
             },

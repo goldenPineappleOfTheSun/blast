@@ -54,7 +54,7 @@ function init() {
     gameField.getSprite().addChild(animationState.getSprite());
 
     app.stage.addChild(initParticles());
-    initRules(2, 2, 1500);
+    initRules(2, 25, 50);
 
     let dom_body = document.querySelector('body');
     if (dom_body) {

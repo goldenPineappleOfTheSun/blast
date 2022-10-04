@@ -7,7 +7,7 @@ import { ScoreFloating } from './scoreFloating.js';
 import { dice, sleep } from './utils.js';
 import { showCurtain, hideCurtain } from './curtain.js';
 import { createParticle } from './particles.js';
-import { getMinPackSize as packSize, getMovesLeft,  move as minusMove, addScore } from './scores.js';
+import { getMinPackSize as packSize, getMovesLeft, getTargetScore, getScore, move as minusMove, addScore } from './scores.js';
 import { readGemColor } from './gemTypes.js';
 
 const stages = {
@@ -15,7 +15,8 @@ const stages = {
     clickable: 1,
     animation: 2,
     swapping: 3,
-    defeat: 4
+    win: 4,
+    defeat: 5
 }
 
 export class GameField {
@@ -313,7 +314,14 @@ export class GameField {
     playersTurn() {
         if (getMovesLeft() <= 0) {
             this.#stage = stages.defeat;
-            showCurtain('defeat', 'Поражение!<div style="font-size: 13px;">ходы кончились</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">');
+            showCurtain('defeat', `Поражение!</div><div style="font-size: 13px;">ходы закончились</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">`)
+            dom.defeat('ходы закончились');
+            return;
+        }
+        if (getTargetScore() <= getScore()) {
+            this.#stage = stages.win;
+            showCurtain('win', 'победа!');
+            dom.win();
             return;
         }
         this.shuffleIfNeeded();
