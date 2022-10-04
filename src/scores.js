@@ -5,7 +5,7 @@ let scoreYelling = 0;
 let target = 100;
 let maxShuffles = 100;
 
-export function init(_minPackSize, _moves, _target, _maxShuffles) {
+export function init(_minPackSize = 2, _moves = 25, _target = 1000, _maxShuffles = 100) {
     minPackSize = _minPackSize;
     moves = _moves;
     target = _target;

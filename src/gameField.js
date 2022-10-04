@@ -15,8 +15,9 @@ const stages = {
     clickable: 1,
     animation: 2,
     swapping: 3,
-    win: 4,
-    defeat: 5
+    shuffle: 4,
+    win: 5,
+    defeat: 6
 }
 
 export class GameField {
@@ -118,6 +119,10 @@ export class GameField {
 
     get position() {
         return {x: this.#x, y:this.#y};
+    }
+
+    get stage() {
+        return this.#stage;
     }
 
     /*
@@ -288,6 +293,8 @@ export class GameField {
             dom.defeat();
             return;
         }
+
+        this.#stage = stages.shuffle;
 
         this.#consequentShuffles++;
 

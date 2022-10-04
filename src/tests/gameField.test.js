@@ -36,11 +36,9 @@ function createExampleField() {
     return new GameField(0, 0)
         .setStateHolders(createExampleGemState(), animationsState)
         .setDimensions(4, 4, 100, 100);
-    initRules(2, 1, 1);
 }
 
 const exampleField1 = createExampleField();
-
 
 test('throws error if "start" called before dimensions set', () => {
     const field = new GameField(0, 0).setStateHolders(gemState, animationsState);
@@ -134,40 +132,40 @@ test('calculates gem position correctly', () => {
 });
 
 test('checkIfPackable with different packSize rule', () => {
-    const field1 = exampleField1;
     initRules(1, 1, 1);
+    const field1 = exampleField1;
     expect(field1.checkIfPackable(0, 0)).toBeTruthy();
     expect(field1.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field2 = exampleField1;
     initRules(2, 1, 1);
+    const field2 = exampleField1;
     expect(field2.checkIfPackable(0, 0)).toBe(false);
     expect(field2.checkIfPackable(1, 0)).toBeTruthy();
     expect(field2.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field3 = exampleField1;
     initRules(3, 1, 1);
+    const field3 = exampleField1;
     expect(field3.checkIfPackable(0, 0)).toBe(false);
     expect(field3.checkIfPackable(1, 0)).toBe(false);
     expect(field3.checkIfPackable(3, 0)).toBeTruthy();
     expect(field3.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field4 = exampleField1;
     initRules(4, 1, 1);
+    const field4 = exampleField1;
     expect(field4.checkIfPackable(0, 0)).toBe(false);
     expect(field4.checkIfPackable(3, 0)).toBe(false);
     expect(field4.checkIfPackable(1, 1)).toBeTruthy();
     expect(field4.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field5 = exampleField1;
     initRules(5, 1, 1);
+    const field5 = exampleField1;
     expect(field5.checkIfPackable(0, 0)).toBe(false);
     expect(field5.checkIfPackable(3, 0)).toBe(false);
     expect(field5.checkIfPackable(1, 1)).toBe(false);
     expect(field5.checkIfPackable(3, 3)).toBeTruthy();
 
-    const field6 = exampleField1;    
     initRules(6, 1, 1);
+    const field6 = exampleField1;    
     expect(field6.checkIfPackable(0, 0)).toBe(false);
     expect(field6.checkIfPackable(3, 0)).toBe(false);
     expect(field6.checkIfPackable(1, 1)).toBe(false);
@@ -176,8 +174,8 @@ test('checkIfPackable with different packSize rule', () => {
 
 test('click must destroy packable gems', () => {
     const state1 = createExampleGemState();
-    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
     initRules(3, 1, 1);
+    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
     field1.click(0, 0);
     expect(state1.get(0, 0)).toBe(gemColors.blue);
 
@@ -186,8 +184,8 @@ test('click must destroy packable gems', () => {
     expect(state1.get(0, 1)).toBe(null);
 
     const state2 = createExampleGemState();
-    const field2 = createExampleField().setStateHolders(state2, animationsState).start();
     initRules(5, 1, 1);
+    const field2 = createExampleField().setStateHolders(state2, animationsState).start();
     field2.click(0, 0);
     expect(state2.get(0, 0)).toBe(gemColors.blue);
 
@@ -198,8 +196,8 @@ test('click must destroy packable gems', () => {
 
 test('click must make upper gems falling', () => {
     const state1 = createExampleGemState();
-    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
     initRules(3, 1, 1);
+    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
     field1.click(0, 0);
     expect(state1.get(0, 0)).toBe(gemColors.blue);
 
@@ -214,16 +212,16 @@ test('click must make upper gems falling', () => {
 test('click create new blocks above', () => {
     const state1 = createExampleGemState();
     const astate1 = createExampleAnimationState();
-    const field1 = createExampleField().setStateHolders(state1, astate1).start();
     initRules(3, 1, 1);
+    const field1 = createExampleField().setStateHolders(state1, astate1).start();
     field1.click(1, 1);
     expect(astate1.count()).toBe(6);
 });
 
 test('clicks dont do anything if start never called', () => {
     const state1 = createExampleGemState();
-    const field1 = createExampleField().setStateHolders(state1, animationsState);
     initRules(3, 1, 1);
+    const field1 = createExampleField().setStateHolders(state1, animationsState);
     field1.click(1, 1);
     expect(state1.get(1, 1)).toBe(gemColors.yellow);
     expect(state1.get(0, 1)).toBe(gemColors.yellow);
@@ -231,8 +229,8 @@ test('clicks dont do anything if start never called', () => {
 
 test('clicks dont do anything when gamefield on a wrong stage', () => {
     const state1 = createExampleGemState();
-    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
     initRules(3, 1, 1);
+    const field1 = createExampleField().setStateHolders(state1, animationsState).start();
     field1.click(1, 1);
     expect(state1.get(1, 1)).toBe(null);
     expect(state1.get(0, 1)).toBe(null);
@@ -240,3 +238,36 @@ test('clicks dont do anything when gamefield on a wrong stage', () => {
     expect(state1.get(3, 3)).toBe(gemColors.blue);
     expect(state1.get(2, 3)).toBe(gemColors.blue);
 });
+
+test('if there are no moves at the beginning game field must shuffle', () => {
+    initRules(3000, 1, 1);
+    const state = createExampleGemState();
+    const field = createExampleField().setStateHolders(state, animationsState).start();
+    expect(field.stage).toBe(4);
+});
+
+test('if there are moves at the beginning then game musnt shuffle', () => {
+    initRules(1, 1, 1);
+    const state = createExampleGemState();
+    const field = createExampleField().setStateHolders(state, animationsState).start();
+    expect(field.stage).toBe(1);
+});
+
+test('if there are no moves left - game is over', () => {
+    initRules(1, 1, 1e9);
+    const state = createExampleGemState();
+    const field = createExampleField().setStateHolders(state, animationsState).start();
+    field.click(1, 1);
+    expect(field.stage).toBe(6);
+});
+
+/*
+TODO: замокать animation state и проверить сложные кейсы:
+после клика поле всегда заполняется полностью новыми камнями
+клик может привести к шафлу, если нет ходов, 
+много щафлов приводят к поражению
+*/
+
+/*
+TODO: придумать как проверять начисление очков.. трудность в том, что они начисляются асинхронно и не сразу при клике
+*/
