@@ -294,9 +294,6 @@ export class GameField {
                 return;
             }
             this.highlight(check);
-            /*this.#animationState.setHighlightedCells(
-                check.map(o => {return {x:o.x*this.#gemSize + this.#gemSize*0.05, y:o.y*this.#gemSize+this.#gemSize*0.05}}), 
-                this.#gemSize*0.9);*/
             return;
         }
 
@@ -310,10 +307,12 @@ export class GameField {
 
     highlight(cells) {
         this.cancelHighlighting();
-        this.#animationState.setHighlightedCells(cells.map(o => ({
-            x:o.x*this.#gemSize + this.#gemSize*0.05, 
-            y:o.y*this.#gemSize+this.#gemSize*0.05})), 
-            this.#gemSize*0.9);
+        this.#animationState.setHighlightedCells(cells
+            .filter(o => o.x >= 0 && o.y >= 0 && o.x < this.#size.x && o.y < this.#size.y)
+            .map(o => ({
+                x:o.x*this.#gemSize + this.#gemSize*0.05, 
+                y:o.y*this.#gemSize+this.#gemSize*0.05})), 
+                this.#gemSize*0.9);
     }
 
     cancelHighlighting() {
