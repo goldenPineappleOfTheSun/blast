@@ -45,7 +45,6 @@ export class AnimationsState {
 
     /* добавить ещё один камень */
     put(gem) {
-        console.log('#');
         const allowedcolors = [FallingGem, SwappingGem];
         if (!allowedcolors.some(o => gem instanceof o)) {
             throw new Error("в AnimationsState можно ложить только объекты разрешенных типов");

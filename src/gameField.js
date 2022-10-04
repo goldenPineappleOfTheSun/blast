@@ -18,10 +18,13 @@ const stages = {
     shuffle: 4,
     win: 5,
     defeat: 6,
-    bonus_pickaxe: 7
+    bonus_pickaxe: 7,
+    bonus_swap_1: 8,
+    bonus_swap_2: 9,
+    bonus_bomb: 10,
 }
 
-const bonusStages = [7];
+const bonusStages = [stages.bonus_pickaxe, stages.bonus_swap, stages.bonus_bomb];
 
 export class GameField {
     #sprite; #x; #y; #width; #height; #gemSize; #maskSprite; #stage; #size; #consequentShuffles;
@@ -273,8 +276,13 @@ export class GameField {
             return;
         }
 
-
         if (this.#stage === stages.bonus_pickaxe) {
+            this.#animationState.setHighlightedCells([], 0);
+            this.#animationState.setHighlightedCells([{x: x*this.#gemSize + this.#gemSize*0.05, y: y*this.#gemSize + this.#gemSize*0.05}], 0);
+            return;
+        }
+
+        if (this.#stage === stages.bonus_bomb) {
             this.#animationState.setHighlightedCells([], 0);
             this.#animationState.setHighlightedCells([{x: x*this.#gemSize + this.#gemSize*0.05, y: y*this.#gemSize + this.#gemSize*0.05}], 0);
             return;
@@ -420,10 +428,24 @@ export class GameField {
         if (name === stages.bonus_pickaxe) {
             this.pickaxe(x, y);
         }
+        if (name === stages.bonus_bomb) {
+            this.bomb(x, y);
+        }
     }
 
     pickaxe(x, y) {
         this.destroyGem(x, y);
+        this.fall();
+        this.disableBonus();
+    }
+
+    bomb(x, y) {
+        console.log('!');
+        for (let i=x-1; i<=x+1; i++) {
+            for (let j=y-1; j<=y+1; j++) {
+                this.destroyGem(i, j);
+            }
+        }
         this.fall();
         this.disableBonus();
     }
