@@ -7,7 +7,7 @@ import { ScoreFloating } from './scoreFloating.js';
 import { dice, sleep } from './utils.js';
 import { showCurtain, hideCurtain } from './curtain.js';
 import { createParticle } from './particles.js';
-import { getMinPackSize as packSize, move as minusMove, addScore } from './scores.js';
+import { getMinPackSize as packSize, getMovesLeft,  move as minusMove, addScore } from './scores.js';
 import { readGemColor } from './gemTypes.js';
 
 const stages = {
@@ -15,6 +15,7 @@ const stages = {
     clickable: 1,
     animation: 2,
     swapping: 3,
+    defeat: 4
 }
 
 export class GameField {
@@ -310,6 +311,11 @@ export class GameField {
 
     /* все анимации закончились и снова можно тыкать */
     playersTurn() {
+        if (getMovesLeft() <= 0) {
+            this.#stage = stages.defeat;
+            showCurtain('defeat', 'Поражение!<div style="font-size: 13px;">ходы кончились</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">');
+            return;
+        }
         this.shuffleIfNeeded();
         this.#stage = stages.clickable;
     }
