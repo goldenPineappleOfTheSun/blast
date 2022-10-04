@@ -198,17 +198,38 @@ export class GameField {
         this.cancelHighlighting();
         minusMove();
 
-        /* удаление блоков */
-        for (let f of check) {
-            this.#fieldState.clear(f.x, f.y);
-            for (let i=0; i<3; i++) {
-                createParticle(new Bubble(
-                    this.#x + f.x * this.#gemSize + this.#gemSize * 0.2 + Math.random() * this.#gemSize * 0.6, 
-                    this.#y + f.y * this.#gemSize + this.#gemSize * 0.2 + Math.random() * this.#gemSize * 0.6, 
-                    this.#gemSize));
-            }
+        /* удаляем */
+        for (let gem of check) {
+            this.destroyGem(gem.x, gem.y);
         }
 
+        /* смотри, что нужно уронить или заполнить */
+        this.fall();
+
+        /* начисляем очки */
+        let index = 1;
+        for (let c of check) {
+            await sleep(100 - index * 3);
+            createParticle(new ScoreFloating(
+                this.#x + c.x * this.#gemSize + this.#gemSize / 2,
+                this.#y + c.y * this.#gemSize + this.#gemSize / 2, 
+                this.#gemSize/2, index, readGemColor(c.color).tint));
+            addScore(+index);
+            index++;
+        }
+    }
+
+    destroyGem(x, y) {
+        this.#fieldState.clear(x, y);
+        for (let i=0; i<3; i++) {
+            createParticle(new Bubble(
+                this.#x + x * this.#gemSize + this.#gemSize * 0.2 + Math.random() * this.#gemSize * 0.6, 
+                this.#y + y * this.#gemSize + this.#gemSize * 0.2 + Math.random() * this.#gemSize * 0.6, 
+                this.#gemSize));
+        }
+    }
+
+    fall() {
         /* подкидываем новые блоки сверху */
         for (let i=0; i<this.#size.x; i++) {
             let count = 0;
@@ -236,18 +257,6 @@ export class GameField {
                     this.#fieldState.clear(i, j);
                 }
             }
-        }
-
-        /* начисляем очки */
-        let index = 1;
-        for (let c of check) {
-            await sleep(100 - index * 3);
-            createParticle(new ScoreFloating(
-                this.#x + c.x * this.#gemSize + this.#gemSize / 2,
-                this.#y + c.y * this.#gemSize + this.#gemSize / 2, 
-                this.#gemSize/2, index, readGemColor(c.color).tint));
-            addScore(+index);
-            index++;
         }
     }
 
@@ -414,7 +423,8 @@ export class GameField {
     }
 
     pickaxe(x, y) {
-        this.#fieldState.clear(x, y);
+        this.destroyGem(x, y);
+        this.fall();
         this.disableBonus();
     }
 

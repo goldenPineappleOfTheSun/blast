@@ -45,10 +45,24 @@ export class AnimationsState {
 
     /* добавить ещё один камень */
     put(gem) {
+        console.log('#');
         const allowedcolors = [FallingGem, SwappingGem];
         if (!allowedcolors.some(o => gem instanceof o)) {
             throw new Error("в AnimationsState можно ложить только объекты разрешенных типов");
         }
+
+        /* следим, чтобы падающие камни не наезжали друг на друга */
+        if (gem instanceof FallingGem) {
+            for (let other in gem) {
+                if (Math.abs(other.x - gem.x) < 0.1 && other.y - gem.y >= 0 && other.y - gem.y < 1) {
+                    gem.y -= 1;
+                    if (other.velocity < gem.velocity) {
+                        gem.velocity = other.velocity;
+                    }
+                }
+            }
+        }
+
         this.#field.push(gem);
     }
 
