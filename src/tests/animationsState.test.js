@@ -2,12 +2,18 @@ import { AnimationsState } from '../animationsState.js';
 import { FallingGem } from '../fallingGem.js';
 import { SwappingGem } from '../swappingGem.js';
 import { gemColors } from '../GemTypes.js';
+import { registerGemAnimation as registerFallingGemAnimation} from '../fallingGem.js';
+import { registerGemAnimation as registerSwappingGemAnimation} from '../swappingGem.js';
 
 function createAnimationState() {
-    return new AnimationsState()
+    let state = new AnimationsState()
         .handlerForGetCellState(()=>{})
         .handlerForPutStaticGem(()=>{})
         .handlerForGetFieldSize(()=>{return {x:1000, y:1000}});
+    registerSwappingGemAnimation(state);
+    registerFallingGemAnimation(state);
+    return state;
+
 }
 
 test('throws error if wrong object color was put as a gem', () => {

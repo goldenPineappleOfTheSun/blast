@@ -5,6 +5,10 @@
 Фактически x и y не меняются, а сдвигается только спрайт, это нужно, чтобы AnimationState их не терял
 */
 
+export function registerGemAnimation(animationState) {
+    animationState.addAnimationType(SwappingGem);
+}
+
 export class SwappingGem {
     #origin; #target; #time; #progress; #color; #dx; #dy;
 
@@ -41,6 +45,21 @@ export class SwappingGem {
             x: this.#dx * this.#progress,
             y: this.#dy * this.#progress,
         };
+    }
+
+    tryExit(animationState, field, functions) {
+        if (this.progress > 1) {
+            functions.putGem(this.target.x, this.target.y, this.color);
+            functions.destroy();
+        }
+    }
+
+    getData(animationState, x, y) {
+        return {
+            animation: 'swapping',
+            color: this.color,
+            offset: this.offset,
+        }
     }
 
     animate(delta = 1) {

@@ -3,13 +3,14 @@ import { GemsState } from '../gemsState.js';
 import { AnimationsState } from '../animationsState.js';
 import { gemColors } from '../GemTypes.js';
 import { init as initRules } from '../scores.js';
-
-
-const gemState = new GemsState(1, 1);
-const animationsState = new AnimationsState();
+import { registerGemAnimation as registerFallingGemAnimation} from '../fallingGem.js';
+import { registerGemAnimation as registerSwappingGemAnimation} from '../swappingGem.js';
 
 function createExampleAnimationState() {
-    return new AnimationsState();
+    let state = new AnimationsState()
+    registerSwappingGemAnimation(state);
+    registerFallingGemAnimation(state);
+    return state;
 }
 
 function createExampleGemState() {
@@ -38,6 +39,8 @@ function createExampleField() {
         .setDimensions(4, 4, 100, 100);
 }
 
+const gemState = new GemsState(1, 1);
+const animationsState = createExampleAnimationState();
 const exampleField1 = createExampleField();
 
 test('throws error if "start" called before dimensions set', () => {

@@ -3,6 +3,10 @@
 Выглядят как обычные, но падающие вниз игровые камни
 */
 
+export function registerGemAnimation(animationState) {
+    animationState.addAnimationType(FallingGem);
+}
+
 export class FallingGem {
     #color; #maxvelocity; #acceleration;
 
@@ -19,6 +23,24 @@ export class FallingGem {
 
     get color() {
         return this.#color;
+    }
+
+    tryExit(animationState, field, functions) {
+        let x = this.x;
+        let y = (this.y + 1) ^ 0;
+        if (functions.getState(x, y) || functions.getFieldSize().y === y) {
+            functions.putGem(x, y - 1, this.color);
+            functions.destroy();
+        }
+    }
+
+    getData(animationState, x, y) {
+        return {
+            animation: 'falling',
+            color: this.color,
+            offset: this.y - y,
+            rotation: this.rotation,
+        }
     }
 
     animate(delta = 1) {

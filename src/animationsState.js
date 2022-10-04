@@ -19,11 +19,17 @@ import { SwappingGem } from './swappingGem.js';
 
 export class AnimationsState {
     #sprite; #field; #getstate; #putgem; #getsize; #animationended; #highlightSprites;
+    #animationTypes;
 
     constructor() {
         this.#sprite = new Container();
         this.#field = [];
         this.#highlightSprites = [];
+        this.#animationTypes = [];
+    }
+
+    addAnimationType(type) {
+        this.#animationTypes[type.name] = true;   
     }
 
     getSprite() {
@@ -61,21 +67,8 @@ export class AnimationsState {
 
     /* добавить ещё одну анимацию */
     put(gem) {
-        const allowedcolors = [FallingGem, SwappingGem];
-        if (!allowedcolors.some(o => gem instanceof o)) {
+        if (!this.#animationTypes[gem.constructor.name]) {
             throw new Error("в AnimationsState можно ложить только объекты разрешенных типов");
-        }
-
-        /* следим, чтобы падающие камни не наезжали друг на друга */
-        if (gem instanceof FallingGem) {
-            for (let other in gem) {
-                if (Math.abs(other.x - gem.x) < 0.1 && other.y - gem.y >= 0 && other.y - gem.y < 1) {
-                    gem.y -= 1;
-                    if (other.velocity < gem.velocity) {
-                        gem.velocity = other.velocity;
-                    }
-                }
-            }
         }
 
         this.#field.push(gem);
@@ -119,24 +112,14 @@ export class AnimationsState {
 
         let elementsToDestroy = [];
         /* проверяем, вдруг произошло что-то важное для геймплея */
-        for (let a of this.#field) {
-            if (a instanceof FallingGem) {
-                let r = this.#getstate
-                let x = a.x;
-                let y = (a.y + 1) ^ 0;
-                if (this.#getstate(x, y) || this.#getsize().y === y) {
-                    this.#putgem(x, y - 1, a.color);
-                    elementsToDestroy.push(a);
-                }
-                continue;
-            }
-            if (a instanceof SwappingGem) {
-                if (a.progress > 1) {
-                    this.#putgem(a.target.x, a.target.y, a.color);
-                    elementsToDestroy.push(a);
-                }
-                continue;
-            }
+        for (let gem of this.#field) {
+
+            gem.tryExit(this, 
+                {...this.#field}, 
+                {destroy: () => {elementsToDestroy.push(gem)},
+                getState: this.#getstate,
+                putGem: this.#putgem,
+                getFieldSize: this.#getsize,});
         }
         this.#field = this.#field.filter(x => !elementsToDestroy.find(y => x === y));
 
@@ -197,48 +180,15 @@ export class AnimationsState {
 
     /* 
     узнать состояние клетки в указанных координатах
-    возвращаемое значение имеет формат:
-
-    для FallingGem:
-    {
-        cell: {
-            animation: 'falling',
-            color: цвет камня "gemColors"
-            offset: текущее смещение относительно нижнего края клетки,
-            rotation: текущий поворот спрайта,
-        }
-    }
-
-    для SwappingGem:
-    {
-        cell: {
-            animation: 'swapping',
-            color: цвет камня "gemColors"
-            offset: текущее смещение спрайта относительно его изначальной клетки
-        }
-    }
+    возвращает объект, по которому, например Cell может решить как себя рисовать
     */
     get(x, y) {
         let cell = null;
         for (let gem of this.#field) {
-            if (Math.abs(gem.x - x) < 0.1 && gem.y - y <= 0 && gem.y - y > -1) {    
-                if (gem instanceof FallingGem) {
-                    cell = {
-                        animation: 'falling',
-                        color: gem.color,
-                        offset: gem.y - y,
-                        rotation: gem.rotation,
-                    }
-                } else if (gem instanceof SwappingGem) {
-                    cell = {
-                        animation: 'swapping',
-                        color: gem.color,
-                        offset: gem.offset,
-                    }
-                }
+            if (Math.abs(gem.x - x) < 0.1 && gem.y - y <= 0 && gem.y - y > -1) {  
+                cell = gem.getData(this, x, y);
             }
         }
-
         return {
             cell: cell
         };

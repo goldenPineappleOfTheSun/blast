@@ -9,6 +9,8 @@ import { init as initRules, animate as animateScore } from './scores.js'
 import { addPickaxeBonusToGamefield } from './pickaxeBonus.js';
 import { addBombBonusToGamefield } from './bombBonus.js';
 import { addSwapBonusToGamefield } from './swapBonus.js';
+import { registerGemAnimation as registerFallingGemAnimation} from './fallingGem.js';
+import { registerGemAnimation as registerSwappingGemAnimation} from './swappingGem.js';
 
 /* в этом месте считываем параметры из адресной строки. Конфиг мог бы быть удобнее, но я хочу выложить на гитхабпейджес, так что вот */
 const urlParams = location.search ? location.search.split('?')[1].split('&').reduce((acc, cur) => {
@@ -77,6 +79,10 @@ function init() {
     addPickaxeBonusToGamefield(gameField);
     addBombBonusToGamefield(gameField);
     addSwapBonusToGamefield(gameField);
+
+    /* регистрируем возможные типы анимированных камней из внешнего модуля */
+    registerSwappingGemAnimation(animationState);
+    registerFallingGemAnimation(animationState);
 
     /* добавляем спрайты к стейджу */
     app.stage.addChild(gameField.getSprite());
