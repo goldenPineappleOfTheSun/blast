@@ -1,13 +1,8 @@
-import { Loader } from 'pixi.js';
+import { Loader, Sprite } from 'pixi.js';
 import FontFaceObserver from 'fontfaceobserver';
 
 const loader = new Loader(); 
-loader.add('blue', 'img/blue.png');
-loader.add('purple', 'img/purple.png');
-loader.add('red', 'img/red.png');
-loader.add('yellow', 'img/yellow.png');
-loader.add('green', 'img/green.png');
-loader.add('bubble', 'img/bubble.png');
+loader.add('spritesheet', 'img/spritesheet.json');
 loader.load(resourcesLoaded);
 
 const font = new FontFaceObserver('marvin');
@@ -41,5 +36,9 @@ export function onResourcesLoaded(func) {
 }
 
 export function getTexture(name) {
-    return loader.resources[name].texture;
+    return loader.resources.spritesheet.textures[`${name}.png`];
+}
+
+export function getFrame(name) {
+    return loader.resources.spritesheet.data.frames[`${name}.png`].frame;
 }

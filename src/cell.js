@@ -1,5 +1,6 @@
 import { Container, Graphics, Sprite } from 'pixi.js'
 import { readGemColor } from './gemTypes.js'
+import { getFrame } from './loader.js'
 
 export class Cell {
     #sprite; #gemSprite; #size; #position; #x; #y; #getstate; #getanimationstate; #onclick; #onmouseover;
@@ -27,10 +28,10 @@ export class Cell {
         this.#gemSprite.anchor.set(0.5);
         this.#sprite.addChild(this.#gemSprite);
 
-        const bounds = this.#gemSprite.getBounds();
+        const bounds = getFrame('red');
         /* у картинок камней есть небольшая пристройка сверху, из-за чего высота чуть больше ширины
         поэтому scale считается относительно ширины */
-        const xScale = this.#size / bounds.width;
+        const xScale = this.#size / bounds.w;
         this.#gemSprite.scale = {x:xScale, y:xScale};
     }
 

@@ -1,18 +1,18 @@
 import { Sprite, Graphics } from 'pixi.js'
-import { getTexture } from './loader.js';
+import { getTexture, getFrame } from './loader.js';
 
 export class Bubble {
     #tint; #lifetime; #sprite; #destroyed; #direction; #steeringSpeed; #speed; #elevationSpeed;
 
     constructor(x, y, size, tint) {
         this.#sprite = new Sprite(getTexture('bubble'));
-        let bounds = this.#sprite.getBounds();
+        const bounds = getFrame('bubble');
         this.#sprite.x = x;
         this.#sprite.y = y;
         this.#sprite.alpha = 0.5;
         this.#sprite.anchor.set(0.5);
         let scale = 0.5 + Math.random() * 0.5;
-        this.#sprite.scale = {x: size / bounds.width * scale, y: size / bounds.width * scale};
+        this.#sprite.scale = {x: size / bounds.w * scale, y: size / bounds.w * scale};
         this.size = size;
         this.#tint = tint;
         this.#direction = Math.random() * Math.PI * 2;
