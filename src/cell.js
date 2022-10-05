@@ -34,6 +34,7 @@ export class Cell {
         this.#sprite.interactive = true;
         /* создаётся много функций, но с другой стороны cell-объекты никогда не удаляются и не пересоздаются, так что ок */
         this.#sprite.on('mouseup', this.click.bind(this));
+        this.#sprite.on('touchstart', this.click.bind(this));
         this.#sprite.on('mouseover', this.mouseover.bind(this));
         this.#size = size;
 
