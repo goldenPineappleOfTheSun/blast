@@ -102,7 +102,7 @@ export class GameField {
     maxWidth - доступная область в пикселях
     maxHeight - доступная область в пикселях
     */
-    setDimensions(w, h, maxWidth, maxHeight) {
+    setSize(w, h, maxWidth, maxHeight) {
         this.#size = {x:w, y:h};
         const horizontal = w / h > maxWidth / maxHeight;
         this.#gemSize = horizontal ? maxWidth / w : maxHeight / h;
@@ -379,7 +379,7 @@ export class GameField {
             }
         }
 
-        if (this.#consequentShuffles >= getMaxConsequentShuffles()) {
+        if (this.#consequentShuffles >= getMaxConsequentShuffles() && this.#stage !== this.#stages.win) {
             this.#stage = this.#stages.defeat;
             showCurtain('defeat', `Поражение!</div><div style="font-size: 13px;">слишком много неудачных перетасовок</div><img src="img/sad-dolphin.png" style="filter: blur(3px);width:100px"><img src="img/sad-dolphin.png" style="position: absolute;bottom: 0;width:100px;">`)
             dom.defeat();
